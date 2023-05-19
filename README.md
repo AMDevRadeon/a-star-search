@@ -11,6 +11,7 @@ Dokumentacja projektu (plik w formacie **pdf**) musi zawierać następujące ele
 - Przykłady zastosowania
 - Opis zastosowanych algorytmów
 - Ilustracja działania programu
+
 Istnieje możliwość wspólnej realizacji projektu przez **2-3** osoby. W takim przypadku grupa oddaje
 **jedno wspólne sprawozdanie**, w którym zaznaczone zostanie jaki był podział zadań zarówno
 implementacyjnych, jak i opisowych.
