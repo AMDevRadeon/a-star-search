@@ -12,7 +12,7 @@ class Application
 {
 	bool m_isRunning = true;
 
-	int m_matrixWidth = 20;
+	int m_matrixWidth = 21;
 	int m_matrixHeight = 20;
 
 	Viewport m_viewport;

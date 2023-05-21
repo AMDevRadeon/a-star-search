@@ -38,6 +38,7 @@ void Application::update()
 	if (sdlEvent.type == SDL_QUIT)
 		m_isRunning = false;
 
+	m_viewport.update(sdlEvent);
 	draw();
 }
 
@@ -51,6 +52,7 @@ void Application::create_matrix()
 	{
 		for (int x = 0; x < m_matrixWidth; x++)
 		{
+			m_matrix[index].state = static_cast<State>(index % 4); // TODO: Remove!
 			m_matrix[index].xpos = x;
 			m_matrix[index].ypos = y;
 			index++;

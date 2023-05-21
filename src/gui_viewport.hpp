@@ -1,11 +1,20 @@
 #pragma once
 #include <SDL2/SDL.h>
+#include "gui_global.hpp"
 
 struct Viewport
 {
 	float m_scale = 1.0f;
 	float m_xoffset = 0;
 	float m_yoffset = 0;
+
+	int m_xstart = 0;
+	int m_ystart = 0;
+	bool m_pressed = false;
+
+	bool update(SDL_Event& sdlEvent);
+	void move(int xmouse, int ymouse);
+	void scale(int xmouse, int ymouse, float factor);
 
 	template <typename WRectType, typename SRectType>
 	void rect_to_screen(const WRectType& from, SRectType& to) const;
