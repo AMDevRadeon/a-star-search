@@ -6,14 +6,16 @@
 #include "gui_viewport.hpp"
 #include "common.hpp"
 
+#include <cmath>
 #include <vector>
 
 class Application
 {
 	bool m_isRunning = true;
+	float m_defaultScale = 1.0f;
 
 	int m_matrixWidth = 21;
-	int m_matrixHeight = 20;
+	int m_matrixHeight = 16;
 
 	Viewport m_viewport;
 	std::vector<Vertex> m_matrix;

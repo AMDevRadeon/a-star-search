@@ -48,6 +48,16 @@ void Application::update()
 	if (sdlEvent.type == SDL_QUIT)
 		m_isRunning = false;
 
+	if (sdlEvent.type == SDL_KEYDOWN)
+	{
+		if (sdlEvent.key.keysym.sym == SDLK_TAB)
+		{
+			m_viewport.m_xoffset = 0;
+			m_viewport.m_yoffset = 0;
+			m_viewport.m_scale = m_defaultScale;
+		}
+	}
+
 	m_viewport.update(sdlEvent);
 	draw();
 }
@@ -62,7 +72,6 @@ void Application::create_matrix()
 	{
 		for (int x = 0; x < m_matrixWidth; x++)
 		{
-			m_matrix[index].state = static_cast<State>(index % 4); // TODO: Remove!
 			m_matrix[index].xpos = x;
 			m_matrix[index].ypos = y;
 			index++;
@@ -84,16 +93,25 @@ void Application::create_main_window()
 	int width = m_matrixWidth * g_defaultVertexSize;
 	int height = m_matrixHeight * g_defaultVertexSize;
 
+	m_defaultScale = 1.0f;
+
 	if (width < g_xMinRes)
 		width = g_xMinRes;
 	else if (width > xMaxRes)
+	{
+		m_defaultScale = xMaxRes / static_cast<float>(width);
 		width = xMaxRes;
+	}
 
 	if (height < g_yMinRes)
 		height = g_yMinRes;
 	else if (height > yMaxRes)
+	{
+		m_defaultScale = std::min(m_defaultScale, yMaxRes / static_cast<float>(height));
 		height = yMaxRes;
+	}
 
+	m_viewport.m_scale = m_defaultScale;
 	m_window = SDL_CreateWindow("A* Pathfinding", pos, pos, width, height, 0);
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 }
