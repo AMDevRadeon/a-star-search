@@ -16,15 +16,25 @@ void Application::draw()
 		{
 			case OPEN:   colorIndex = 2; break;
 			case CLOSED: colorIndex = 3; break;
-			case PATH:   colorIndex = 4; break;
+			case PATH:   colorIndex = 4;
 		}
 
-		auto color = g_colors[colorIndex];
+		auto& color = g_colors[colorIndex];
 		SDL_SetRenderDrawColor(m_renderer, std::get<0>(color), std::get<1>(color), std::get<2>(color), 0xFF);
 
-		SDL_Rect rect{ vertex.xpos * g_defaultVertexSize, vertex.ypos * g_defaultVertexSize, g_defaultVertexSize, g_defaultVertexSize };
+		const float x = static_cast<float>(vertex.xpos * g_defaultVertexSize);
+		const float y = static_cast<float>(vertex.ypos * g_defaultVertexSize);
+
+		SDL_FRect rect{ x, y, g_defaultVertexSize, g_defaultVertexSize };
 		m_viewport.rect_to_screen(rect, rect);
-		SDL_RenderFillRect(m_renderer, &rect);
+
+		rect.x += 1.0f; rect.w -= 2.0f;
+		rect.y += 1.0f; rect.h -= 2.0f;
+
+		if (rect.w <= 0)
+			break;
+
+		SDL_RenderFillRectF(m_renderer, &rect);
 	}
 
 	SDL_RenderPresent(m_renderer);
