@@ -1,0 +1,28 @@
+# FILE TEMPLATE FOR INITIALIZING Graph OBJECT
+#
+# Plik składa się z trzech części:
+# 1. Nagłówka zawierającego dwie liczby całkowite: wymiary grafu {x, y}
+# 2. Macierzy małpek i pauz która odpowiadącej za ustawianie, które wierzchołki to ściany:
+#      a) -: normalny wierzchołek
+#      b) @: ściana
+#    Macierz powinna mieć wymiary podane w punkcie 1.
+# 3. Stopki zawierającej pary dwóch liczb całkowitych: współrzędne kolejno wierzchołka rozpoczęcia
+#    i zakończenia algorymtu (lewy górny róg macierzy to (0,0), w prawo x rośnie, w dół y rośnie; najpierw start, potem stop).
+#
+# EXAMPLE FILE
+# 10 10
+# @@@@@@@@@@
+# @--------@
+# @-@@--@@-@
+# ----------
+# @-@@@@@@-@
+# @-@----@-@
+# @-@----@-@
+# @-@----@-@
+# ----------
+# @--------@
+# 5 1 4 6
+#
+# NAGŁÓWEK
+# MACIERZ
+# STOPKA
