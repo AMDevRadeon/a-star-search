@@ -6,10 +6,22 @@ void Application::draw()
 	SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(m_renderer);
 
-	SDL_SetRenderDrawColor(m_renderer, 0, 0xFF, 0, 0xFF);
-
 	for (Vertex& vertex : m_matrix)
 	{
+		int colorIndex = 0;
+
+		if (!vertex.is_active)
+			colorIndex = 1;
+		else switch (vertex.state)
+		{
+			case OPEN:   colorIndex = 2; break;
+			case CLOSED: colorIndex = 3; break;
+			case PATH:   colorIndex = 4; break;
+		}
+
+		auto color = g_colors[colorIndex];
+		SDL_SetRenderDrawColor(m_renderer, std::get<0>(color), std::get<1>(color), std::get<2>(color), 0xFF);
+
 		SDL_Rect rect{ vertex.xpos * g_defaultVertexSize, vertex.ypos * g_defaultVertexSize, g_defaultVertexSize, g_defaultVertexSize };
 		m_viewport.rect_to_screen(rect, rect);
 		SDL_RenderFillRect(m_renderer, &rect);
