@@ -11,9 +11,9 @@ struct Vertex
 	int xpos = 0;
 	int ypos = 0;
 
-	float fcost = 0; // gcost + hcost
-	float gcost = 0; // dystans od poczatku
-	float hcost = 0; // heurystyka
+	double fcost = 0; // gcost + hcost
+	double gcost = 0; // dystans od poczatku
+	double hcost = 0; // heurystyka
 
 	bool is_active = true;
 	Vertex* previous = nullptr;
@@ -33,5 +33,5 @@ inline void Vertex::Reset()
 	state = AVAILABLE;
 }
 
-void solve_astar(Vertex* vertices, Vertex* start, Vertex* stop, int xsize, int ysize, bool diagonal_allowed);
+void solve_astar(Vertex* vertices, Vertex* start, Vertex* stop, int xsize, int ysize, bool diagonal_allowed, void (*callback)());
 
