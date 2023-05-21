@@ -5,6 +5,16 @@ void Application::draw()
 	SDL_SetRenderTarget(m_renderer, nullptr);
 	SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(m_renderer);
+
+	SDL_SetRenderDrawColor(m_renderer, 0, 0xFF, 0, 0xFF);
+
+	for (Vertex& vertex : m_matrix)
+	{
+		SDL_Rect rect{ vertex.xpos * g_defaultVertexSize, vertex.ypos * g_defaultVertexSize, g_defaultVertexSize, g_defaultVertexSize };
+		m_viewport.rect_to_screen(rect, rect);
+		SDL_RenderFillRect(m_renderer, &rect);
+	}
+
 	SDL_RenderPresent(m_renderer);
 }
 
@@ -17,6 +27,23 @@ void Application::update()
 		m_isRunning = false;
 
 	draw();
+}
+
+void Application::create_matrix()
+{
+	m_matrix.clear();
+	m_matrix.resize(m_matrixWidth * m_matrixHeight);
+
+	int index = 0;
+	for (int y = 0; y < m_matrixHeight; y++)
+	{
+		for (int x = 0; x < m_matrixWidth; x++)
+		{
+			m_matrix[index].xpos = x;
+			m_matrix[index].ypos = y;
+			index++;
+		}
+	}
 }
 
 void Application::create_main_window()
@@ -81,5 +108,7 @@ Application::~Application()
 void Application::run()
 {
 	create_main_window();
+	create_matrix();
+
 	while (m_isRunning) update();
 }
