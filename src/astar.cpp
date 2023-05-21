@@ -13,6 +13,7 @@ static void file_check_line_comment(FILE* fhook, const char comm) {
         ungetc(curr_char, fhook);
 }
 
+#ifdef ASTAR_DEBUG
 void DEBUG_graphall_print(Graph &graph) {
     int xsize = graph.get_xsize(), ysize = graph.get_ysize();
     Vertex* curr_vertex;
@@ -40,6 +41,7 @@ void DEBUG_graphall_print(Graph &graph) {
 
     printf("start:(%d %d), stop(%d, %d)", graph.start->xpos, graph.start->ypos, graph.stop->xpos, graph.stop->ypos);
 }
+#endif
 
 Vertex* Graph::get_vertex(int xcoord, int ycoord) {
     if (xcoord < 0 || ycoord < 0 || xcoord >= this->xsize || ycoord >= this->ysize) {
@@ -76,15 +78,15 @@ Graph::Graph(FILE* fhook) {
         Vertex* curr_vertex;
 
         file_check_line_comment(fhook, '#');
-        if (feof(fhook)) throw std::runtime_error("FILE ERROR: Bad formatting 1");
+        if (feof(fhook)) throw std::runtime_error("FILE ERROR: Bad formatting. No template header.");
         fscanf(fhook, "%d%d", &(this->xsize), &(this->ysize));
 
-        if (feof(fhook)) throw std::runtime_error("FILE ERROR: Bad formatting 2");
+        if (feof(fhook)) throw std::runtime_error("FILE ERROR: Bad formatting. No template body.");
         this->graph = new Vertex[(size_t)this->xsize * this->ysize];
 
         for (i = 0; i < this->ysize; i++) {
             file_check_line_comment(fhook, '#');
-            if (feof(fhook)) throw std::runtime_error("FILE ERROR: Bad formatting 3");
+            if (feof(fhook)) throw std::runtime_error("FILE ERROR: Bad formatting. Defective body.");
 
             for (j = 0; j < this->xsize; j++) {
                 curr_vertex = this->get_vertex(j,i);
@@ -92,7 +94,7 @@ Graph::Graph(FILE* fhook) {
                 curr_vertex->ypos = i;
                 curr_char = fgetc(fhook);
 
-                if (curr_char == '\n') throw std::runtime_error("FILE ERROR: Bad formatting 4");
+                if (curr_char == '\n') throw std::runtime_error("FILE ERROR: Bad formatting. Defective body, unexpected line end.");
 
                 switch (curr_char) {
                 case '0':
@@ -104,23 +106,25 @@ Graph::Graph(FILE* fhook) {
                     curr_vertex->is_active = true;
                     break;
                 default:
-                    throw std::runtime_error("FILE ERROR: Bad formatting 5");
+                    throw std::runtime_error("FILE ERROR: Bad formatting. Unexpected symbol in template body.");
                     break;
                 }
             }
             fgetc(fhook);
-            if (feof(fhook)) throw std::runtime_error("FILE ERROR: Bad formatting 6");
+            if (feof(fhook)) throw std::runtime_error("FILE ERROR: Bad formatting. Defective body.");
         }
 
         file_check_line_comment(fhook, '#');
-        if (feof(fhook)) throw std::runtime_error("FILE ERROR: Bad formatting 7");
+        if (feof(fhook)) throw std::runtime_error("FILE ERROR: Bad formatting. No template footer.");
 
         int coordinates[4];
         fscanf(fhook, "%d%d%d%d", &coordinates[0], &coordinates[1], &coordinates[2], &coordinates[3]);
         this->start = this->get_vertex(coordinates[0], coordinates[1]);
         this->stop = this->get_vertex(coordinates[2], coordinates[3]);
 
+        #ifdef ASTAR_DEBUG
         DEBUG_graphall_print(*this);
+        #endif
     }
     else {
         throw std::runtime_error("FILE ERROR: Empty file pointer");

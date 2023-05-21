@@ -58,5 +58,5 @@ class Graph {
 		~Graph();
 };
 
-//void solve_astar(Vertex* vertices, Vertex* start, Vertex* stop, int xsize, int ysize, bool diagonal_allowed, void (*callback)());
+void solve_astar(Vertex* vertices, Vertex* start, Vertex* stop, int xsize, int ysize, bool diagonal_allowed, void (*callback)());
 
