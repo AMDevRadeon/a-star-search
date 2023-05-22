@@ -1,4 +1,5 @@
 #include "gui_application.hpp"
+#include "gui_callback.hpp"
 
 void Application::draw()
 {
@@ -65,7 +66,7 @@ void Application::update()
 	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
 		handled |= crr -> handle_event(sdlEvent);
 
-	if (!handled)
+	if (!handled && m_mode == B_CURSOR)
 		m_viewport.update(sdlEvent);
 }
 
@@ -159,15 +160,15 @@ void Application::create_main_window()
 	int x = -m_iconWidth;
 	int y = height - m_iconHeight;
 
-	access_widget<Button>(B_PLAY, PLAY, x += m_iconWidth, y);
-	access_widget<Button>(B_REPEAT, REPEAT, x += m_iconWidth, y);
-	access_widget<Button>(B_CURSOR, CURSOR, x += m_iconWidth, y);
-	access_widget<Button>(B_FLAG_START, FLAG_START, x += m_iconWidth, y);
-	access_widget<Button>(B_FLAG_STOP, FLAG_STOP, x += m_iconWidth, y);
-	access_widget<Button>(B_ACTIVATE, ACTIVATE, x += m_iconWidth, y);
-	access_widget<Button>(B_DEACTIVATE, DEACTIVATE, x += m_iconWidth, y);
-	access_widget<Button>(B_RESIZE, RESIZE, x += m_iconWidth, y);
-	access_widget<Button>(B_RANDOMIZE, RANDOMIZE, x += m_iconWidth, y);
+	access_widget<Button>(B_PLAY, PLAY, x += m_iconWidth, y, &callback_play);
+	access_widget<Button>(B_REPEAT, REPEAT, x += m_iconWidth, y, &callback_repeat);
+	access_widget<Button>(B_CURSOR, CURSOR, x += m_iconWidth, y, &callback_cursor);
+	access_widget<Button>(B_FLAG_START, FLAG_START, x += m_iconWidth, y, &callback_flag_start);
+	access_widget<Button>(B_FLAG_STOP, FLAG_STOP, x += m_iconWidth, y, &callback_flag_stop);
+	access_widget<Button>(B_ACTIVATE, ACTIVATE, x += m_iconWidth, y, &callback_activate);
+	access_widget<Button>(B_DEACTIVATE, DEACTIVATE, x += m_iconWidth, y, &callback_deactivate);
+	access_widget<Button>(B_RESIZE, RESIZE, x += m_iconWidth, y, &callback_resize);
+	access_widget<Button>(B_RANDOMIZE, RANDOMIZE, x += m_iconWidth, y, &callback_randomize);
 }
 
 void Application::destroy_window()
@@ -193,6 +194,15 @@ void Application::destroy_window()
 	}
 }
 
+void Application::refresh_mode()
+{
+	access_widget<Button>(B_CURSOR).m_selected = m_mode == B_CURSOR;
+	access_widget<Button>(B_FLAG_START).m_selected = m_mode == B_FLAG_START;
+	access_widget<Button>(B_FLAG_STOP).m_selected = m_mode == B_FLAG_STOP;
+	access_widget<Button>(B_ACTIVATE).m_selected = m_mode == B_ACTIVATE;
+	access_widget<Button>(B_DEACTIVATE).m_selected = m_mode == B_DEACTIVATE;
+}
+
 Application::Application()
 {
 	SDL_Init(SDL_INIT_VIDEO);
@@ -213,6 +223,7 @@ void Application::run()
 {
 	create_main_window();
 	create_matrix();
+	refresh_mode();
 
 	while (m_isRunning)
 	{

@@ -41,7 +41,10 @@ struct Button : public Widget
 	static int s_hovTextureID;
 	static int s_disTextureID;
 
-	Button(int txID, int x, int y) : m_textureID(txID), m_xpos(x), m_ypos(y) {}
+	Button() = default;
+	Button(int txID, int x, int y, void (*callback)(Application&))
+		: m_textureID(txID), m_xpos(x), m_ypos(y), m_callback(callback) {}
+
 	~Button() = default;
 
 	void draw() override;

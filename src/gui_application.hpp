@@ -1,3 +1,5 @@
+#pragma once
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
@@ -25,8 +27,9 @@ enum WidgetID
 	B_RANDOMIZE
 };
 
-class Application
+struct Application
 {
+	int m_mode = B_CURSOR;
 	bool m_isRunning = true;
 	float m_defaultScale = 1.0f;
 
@@ -52,17 +55,15 @@ class Application
 	void create_matrix();
 	void create_main_window();
 	void destroy_window();
+	void refresh_mode();
 
 	template <typename Type, typename... Args>
 	Type& access_widget(int id, Args... args);
 
-	public:
 	Application();
 	~Application();
 
 	void run();
-
-	friend class Button;
 };
 
 template <typename Type, typename... Args>
