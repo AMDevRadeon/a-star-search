@@ -7,6 +7,7 @@
 #include "gui_global.hpp"
 #include "gui_viewport.hpp"
 #include "gui_widget.hpp"
+#include "gui_callback.hpp"
 #include "common.hpp"
 
 #include <cmath>
@@ -16,7 +17,8 @@ enum TextureID
 {
 	PLAY, STOP, REPEAT, CURSOR,
 	FLAG_START, FLAG_STOP, ACTIVATE, DEACTIVATE,
-	RESIZE, RANDOMIZE, SELECTED, HOVER,
+	RESIZE, RANDOMIZE, LOAD, OK,
+	FLAG_START_2, FLAG_STOP_2, SELECTED, HOVER,
 	DISABLED
 };
 
@@ -24,7 +26,7 @@ enum WidgetID
 {
 	B_PLAY, B_REPEAT, B_CURSOR, B_FLAG_START,
 	B_FLAG_STOP, B_ACTIVATE, B_DEACTIVATE, B_RESIZE,
-	B_RANDOMIZE
+	B_RANDOMIZE, B_LOAD, B_OK
 };
 
 struct Application

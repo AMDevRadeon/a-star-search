@@ -50,3 +50,8 @@ void callback_randomize(Application& app)
 {
 
 }
+
+void callback_load(Application& app)
+{
+
+}

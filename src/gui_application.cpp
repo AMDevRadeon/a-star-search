@@ -204,6 +204,7 @@ void Application::create_main_window()
 	access_widget<Button>(B_DEACTIVATE, DEACTIVATE, x += m_iconWidth, y, &callback_deactivate);
 	access_widget<Button>(B_RESIZE, RESIZE, x += m_iconWidth, y, &callback_resize);
 	access_widget<Button>(B_RANDOMIZE, RANDOMIZE, x += m_iconWidth, y, &callback_randomize);
+	access_widget<Button>(B_LOAD, LOAD, x += m_iconWidth, y, &callback_load);
 }
 
 void Application::destroy_window()

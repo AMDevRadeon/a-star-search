@@ -1,5 +1,6 @@
 #pragma once
-#include "gui_application.hpp"
+
+struct Application;
 
 void callback_play(Application& app);
 void callback_repeat(Application& app);
@@ -10,3 +11,5 @@ void callback_activate(Application& app);
 void callback_deactivate(Application& app);
 void callback_resize(Application& app);
 void callback_randomize(Application& app);
+void callback_load(Application& app);
+
