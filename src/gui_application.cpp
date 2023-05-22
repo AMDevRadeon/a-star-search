@@ -46,6 +46,8 @@ void Application::draw()
 
 void Application::update()
 {
+	static bool s_isPressed = false;
+
 	SDL_Event sdlEvent{};
 	SDL_WaitEvent(&sdlEvent);
 
@@ -61,13 +63,46 @@ void Application::update()
 			m_viewport.m_scale = m_defaultScale;
 		}
 	}
+	else if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
+		s_isPressed = true;
+	else if (sdlEvent.type == SDL_MOUSEBUTTONUP)
+		s_isPressed = false;
 
 	bool handled = false;
 	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
 		handled |= crr -> handle_event(sdlEvent);
 
-	if (!handled && m_mode == B_CURSOR)
+	if (handled)
+		return;
+
+	if (m_mode == B_CURSOR)
+	{
 		m_viewport.update(sdlEvent);
+		return;
+	}
+
+	int xmouse, ymouse;
+
+	SDL_GetMouseState(&xmouse, &ymouse);
+	m_viewport.to_world(xmouse, ymouse, xmouse, ymouse);
+
+	if (!s_isPressed || xmouse < 0 || ymouse < 0)
+		return;
+
+	xmouse /= g_defaultVertexSize;
+	ymouse /= g_defaultVertexSize;
+
+	if (xmouse >= m_matrixWidth || ymouse >= m_matrixHeight)
+		return;
+
+	const int index = ymouse * m_matrixWidth + xmouse;
+	Vertex& vertex = m_matrix[index];
+
+	switch (m_mode)
+	{
+		case B_ACTIVATE: vertex.is_active = true; break;
+		case B_DEACTIVATE: vertex.is_active = false;
+	}
 }
 
 void Application::load_icons()
