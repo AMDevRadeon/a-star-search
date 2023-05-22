@@ -61,10 +61,12 @@ void Application::update()
 		}
 	}
 
+	bool handled = false;
 	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
-		crr -> handle_event(sdlEvent);
+		handled |= crr -> handle_event(sdlEvent);
 
-	m_viewport.update(sdlEvent);
+	if (!handled)
+		m_viewport.update(sdlEvent);
 }
 
 void Application::load_icons()
@@ -146,11 +148,26 @@ void Application::create_main_window()
 		height = yMaxRes;
 	}
 
+	height += g_windowExtraHeight;
+
 	m_viewport.m_scale = m_defaultScale;
 	m_window = SDL_CreateWindow("A* Pathfinding", pos, pos, width, height, 0);
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
 	load_icons();
+
+	int x = -m_iconWidth;
+	int y = height - m_iconHeight;
+
+	access_widget<Button>(B_PLAY, PLAY, x += m_iconWidth, y);
+	access_widget<Button>(B_REPEAT, REPEAT, x += m_iconWidth, y);
+	access_widget<Button>(B_CURSOR, CURSOR, x += m_iconWidth, y);
+	access_widget<Button>(B_FLAG_START, FLAG_START, x += m_iconWidth, y);
+	access_widget<Button>(B_FLAG_STOP, FLAG_STOP, x += m_iconWidth, y);
+	access_widget<Button>(B_ACTIVATE, ACTIVATE, x += m_iconWidth, y);
+	access_widget<Button>(B_DEACTIVATE, DEACTIVATE, x += m_iconWidth, y);
+	access_widget<Button>(B_RESIZE, RESIZE, x += m_iconWidth, y);
+	access_widget<Button>(B_RANDOMIZE, RANDOMIZE, x += m_iconWidth, y);
 }
 
 void Application::destroy_window()

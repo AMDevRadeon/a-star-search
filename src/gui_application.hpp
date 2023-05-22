@@ -18,6 +18,13 @@ enum TextureID
 	DISABLED
 };
 
+enum WidgetID
+{
+	B_PLAY, B_REPEAT, B_CURSOR, B_FLAG_START,
+	B_FLAG_STOP, B_ACTIVATE, B_DEACTIVATE, B_RESIZE,
+	B_RANDOMIZE
+};
+
 class Application
 {
 	bool m_isRunning = true;
@@ -46,8 +53,8 @@ class Application
 	void create_main_window();
 	void destroy_window();
 
-	template <typename Type>
-	Type& access_widget(int id);
+	template <typename Type, typename... Args>
+	Type& access_widget(int id, Args... args);
 
 	public:
 	Application();
@@ -58,8 +65,8 @@ class Application
 	friend class Button;
 };
 
-template <typename Type>
-Type& Application::access_widget(int id)
+template <typename Type, typename... Args>
+Type& Application::access_widget(int id, Args... args)
 {
 	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
 	{
@@ -71,7 +78,7 @@ Type& Application::access_widget(int id)
 	}
 
 	Widget::s_appPointer = this;
-	Type* const ptr = new Type();
+	Type* const ptr = new Type(args...);
 
 	ptr -> m_id = id;
 	ptr -> m_next = m_widgetList;

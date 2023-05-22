@@ -34,8 +34,9 @@ void Button::draw()
 	}
 }
 
-void Button::handle_event(SDL_Event& sdlEvent)
+bool Button::handle_event(SDL_Event& sdlEvent)
 {
+	bool ret = false;
 	int xmouse, ymouse;
 	SDL_GetMouseState(&xmouse, &ymouse);
 
@@ -45,12 +46,14 @@ void Button::handle_event(SDL_Event& sdlEvent)
 		if (m_enabled && m_hover && m_callback != nullptr)
 		{
 			(*m_callback)(m_app);
-			sdlEvent = {};
+			ret = true;
 		}
 		break;
 
 		case SDL_MOUSEMOTION:
 		m_hover = xmouse >= m_xpos && xmouse < m_xpos + m_app.m_iconWidth && ymouse >= m_ypos && ymouse < m_ypos + m_app.m_iconHeight;
-		if (m_hover) sdlEvent = {};
+		ret = m_hover;
 	}
+
+	return ret;
 }

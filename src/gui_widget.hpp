@@ -20,7 +20,7 @@ class Widget
 	virtual ~Widget() { delete m_next; }
 
 	virtual void draw() {}
-	virtual void handle_event(SDL_Event&) {}
+	virtual bool handle_event(SDL_Event&) { return false; }
 
 	friend class Application;
 };
@@ -31,9 +31,9 @@ struct Button : public Widget
 	bool m_hover = false;
 	bool m_selected = false;
 
+	int m_textureID = 0;
 	int m_xpos = 0;
 	int m_ypos = 0;
-	int m_textureID = 0;
 
 	void (*m_callback)(Application&) = nullptr;
 
@@ -41,9 +41,9 @@ struct Button : public Widget
 	static int s_hovTextureID;
 	static int s_disTextureID;
 
-	Button() = default;
+	Button(int txID, int x, int y) : m_textureID(txID), m_xpos(x), m_ypos(y) {}
 	~Button() = default;
 
 	void draw() override;
-	void handle_event(SDL_Event& sdlEvent) override;
+	bool handle_event(SDL_Event& sdlEvent) override;
 };
