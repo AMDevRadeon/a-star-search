@@ -37,6 +37,9 @@ void Application::draw()
 		SDL_RenderFillRectF(m_renderer, &rect);
 	}
 
+	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
+		crr -> draw();
+
 	SDL_RenderPresent(m_renderer);
 }
 
@@ -58,8 +61,40 @@ void Application::update()
 		}
 	}
 
+	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
+		crr -> handle_event(sdlEvent);
+
 	m_viewport.update(sdlEvent);
-	draw();
+}
+
+void Application::load_icons()
+{
+	unload_icons();
+	SDL_Surface* surface = IMG_Load(g_iconsPath);
+
+	if (surface == nullptr)
+	{
+		m_isRunning = false; // TODO: Add exceptions
+		return;
+	}
+
+	m_icons = SDL_CreateTextureFromSurface(m_renderer, surface);
+
+	SDL_SetTextureBlendMode(m_icons, SDL_BLENDMODE_BLEND);
+	SDL_FreeSurface(surface);
+	SDL_QueryTexture(m_icons, nullptr, nullptr, &m_iconWidth, &m_iconHeight);
+
+	m_iconCount = m_iconWidth / m_iconHeight;
+	m_iconWidth = m_iconHeight;
+}
+
+void Application::unload_icons()
+{
+	if (m_icons != nullptr)
+	{
+		SDL_DestroyTexture(m_icons);
+		m_icons = nullptr;
+	}
 }
 
 void Application::create_matrix()
@@ -114,10 +149,20 @@ void Application::create_main_window()
 	m_viewport.m_scale = m_defaultScale;
 	m_window = SDL_CreateWindow("A* Pathfinding", pos, pos, width, height, 0);
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+
+	load_icons();
 }
 
 void Application::destroy_window()
 {
+	unload_icons();
+
+	if (m_widgetList != nullptr)
+	{
+		delete m_widgetList;
+		m_widgetList = nullptr;
+	}
+
 	if (m_renderer != nullptr)
 	{
 		SDL_DestroyRenderer(m_renderer);
@@ -152,5 +197,9 @@ void Application::run()
 	create_main_window();
 	create_matrix();
 
-	while (m_isRunning) update();
+	while (m_isRunning)
+	{
+		update();
+		draw();
+	}
 }

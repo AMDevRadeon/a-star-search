@@ -8,6 +8,8 @@ inline constexpr int g_xMinRes = 300;
 inline constexpr int g_yMinRes = 300;
 inline constexpr int g_defaultVertexSize = 40;
 
+inline const char* const g_iconsPath = "icons.png";
+
 inline constexpr std::tuple<int, int, int> g_colors[] =
 {
 	std::make_tuple(0xFF, 0xFF, 0xFF), // active
