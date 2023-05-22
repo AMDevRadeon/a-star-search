@@ -36,6 +36,16 @@ void Application::draw()
 			break;
 
 		SDL_RenderFillRectF(m_renderer, &rect);
+		if (&vertex == m_vertStart || &vertex == m_vertStop)
+		{
+			const int index = &vertex == m_vertStart ? FLAG_START_2 : FLAG_STOP_2;
+			const SDL_Rect src{ index * m_iconWidth, 0, m_iconWidth, m_iconHeight };
+
+			rect.x -= 1.0f; rect.w += 2.0f;
+			rect.y -= 1.0f; rect.h += 2.0f;
+
+			SDL_RenderCopyF(m_renderer, m_icons, &src, &rect);
+		}
 	}
 
 	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
@@ -95,13 +105,23 @@ void Application::update()
 	if (xmouse >= m_matrixWidth || ymouse >= m_matrixHeight)
 		return;
 
-	const int index = ymouse * m_matrixWidth + xmouse;
-	Vertex& vertex = m_matrix[index];
+	Vertex& vertex = m_matrix[ymouse * m_matrixWidth + xmouse];
+	const bool isFlag = &vertex == m_vertStart || &vertex == m_vertStop;
 
 	switch (m_mode)
 	{
+		case B_FLAG_START:
+		if (vertex.is_active && !isFlag)
+			m_vertStart = &vertex;
+		break;
+
+		case B_FLAG_STOP:
+		if (vertex.is_active && !isFlag)
+			m_vertStop = &vertex;
+		break;
+
 		case B_ACTIVATE: vertex.is_active = true; break;
-		case B_DEACTIVATE: vertex.is_active = false;
+		case B_DEACTIVATE: vertex.is_active = isFlag;
 	}
 }
 
@@ -196,7 +216,7 @@ void Application::create_main_window()
 	int y = height - m_iconHeight;
 
 	access_widget<Button>(B_PLAY, PLAY, x += m_iconWidth, y, &callback_play);
-	access_widget<Button>(B_REPEAT, REPEAT, x += m_iconWidth, y, &callback_repeat);
+	access_widget<Button>(B_RESET, RESET, x += m_iconWidth, y, &callback_reset);
 	access_widget<Button>(B_CURSOR, CURSOR, x += m_iconWidth, y, &callback_cursor);
 	access_widget<Button>(B_FLAG_START, FLAG_START, x += m_iconWidth, y, &callback_flag_start);
 	access_widget<Button>(B_FLAG_STOP, FLAG_STOP, x += m_iconWidth, y, &callback_flag_stop);

@@ -15,7 +15,7 @@
 
 enum TextureID
 {
-	PLAY, STOP, REPEAT, CURSOR,
+	PLAY, STOP, RESET, CURSOR,
 	FLAG_START, FLAG_STOP, ACTIVATE, DEACTIVATE,
 	RESIZE, RANDOMIZE, LOAD, OK,
 	FLAG_START_2, FLAG_STOP_2, SELECTED, HOVER,
@@ -24,7 +24,7 @@ enum TextureID
 
 enum WidgetID
 {
-	B_PLAY, B_REPEAT, B_CURSOR, B_FLAG_START,
+	B_PLAY, B_RESET, B_CURSOR, B_FLAG_START,
 	B_FLAG_STOP, B_ACTIVATE, B_DEACTIVATE, B_RESIZE,
 	B_RANDOMIZE, B_LOAD, B_OK
 };
@@ -44,6 +44,9 @@ struct Application
 
 	Viewport m_viewport;
 	std::vector<Vertex> m_matrix;
+
+	Vertex* m_vertStart = nullptr;
+	Vertex* m_vertStop = nullptr;
 
 	Widget* m_widgetList = nullptr;
 	SDL_Window* m_window = nullptr;

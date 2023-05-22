@@ -6,9 +6,13 @@ void callback_play(Application& app)
 
 }
 
-void callback_repeat(Application& app)
+void callback_reset(Application& app)
 {
+	for (Vertex& vertex : app.m_matrix)
+		vertex.Reset();
 
+	app.m_vertStart = nullptr;
+	app.m_vertStop = nullptr;
 }
 
 void callback_cursor(Application& app)

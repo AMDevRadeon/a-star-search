@@ -3,7 +3,7 @@
 struct Application;
 
 void callback_play(Application& app);
-void callback_repeat(Application& app);
+void callback_reset(Application& app);
 void callback_cursor(Application& app);
 void callback_flag_start(Application& app);
 void callback_flag_stop(Application& app);
