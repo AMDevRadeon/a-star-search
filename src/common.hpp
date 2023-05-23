@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <cstdio>
+#include <cstring>
 #include <stdexcept>
 
 #define TEMPLATES "../templates"
@@ -47,14 +48,31 @@ class Graph {
 		Vertex* start;
 		Vertex* stop;
 
+		/**
+		 * Inicjalizuje obiekt Graph pobierając dane z wzorca 
+		 * umieszczonego w pliku o podanej ścieżce.
+		 * 
+		 * @param {char*} filepath - Ścieżka do pliku
+		 */
+		void init_by_file_template(const char* filepath);
+		void init_by_user_interface();
+		void init_by_random();
+
 		int get_xsize();
 		int get_ysize();
-		Vertex* get_vertex(int, int); // Wskaźnik do wierzchołka (x, y): wspólrzędne
-									  // zaczynają się od (0, 0) w lewym górnym rogu
-		//void set_active_nodes(bool*); // Ustawia przeszkody na grafie
+		/**
+		 * Zwraca wskaźnik do wierzchołka obiektu Graph o podanych współrzędnych.
+		 * Numerowanie zaczyna się od lewego górnego rogu od współrzędnych (0,0).
+		 * @param {int} xcoord - Współrzędna x wierzchołka,
+		 * @param {int} ycoord - Współrzędna y wierzchołka.
+		 * @returns Vertex* - Zwraca wskażnik jeżeli wspołrzędne są w zakresie [0, xsize) i [0, ysize). Zwraca nullptr w przeciwnym wypadku.
+		 */
+		Vertex* get_vertex(int xcoord, int ycoord);
 		
-		Graph(int, int);
-		Graph(FILE*);
+		int util_check_init();
+		void util_uninit();
+		
+		Graph();
 		~Graph();
 };
 

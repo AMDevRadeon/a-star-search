@@ -1,4 +1,5 @@
 #include "common.hpp"
+#define ASTAR_DEBUG
 
 static void file_check_line_comment(FILE* fhook, const char comm) {
         char curr_char;
@@ -58,24 +59,41 @@ int Graph::get_ysize() {
     return this->ysize;
 }
 
-Graph::Graph(int xsize, int ysize) {
-    this->xsize = xsize;
-    this->ysize = ysize;
-    this->graph = new Vertex[(size_t)this->xsize * this->ysize];
+Graph::Graph() {
+    this->xsize = -1;
+    this->ysize = -1;
+    this->graph = (Vertex*)nullptr;
+}
 
-    div_t div_res;
-    for (int i = 0; i < this->xsize * this->ysize; i++) {
-        div_res = div(i, this->xsize);
-        this->graph[i].xpos = div_res.rem;
-        this->graph[i].ypos = div_res.quot;
+int Graph::util_check_init() {
+    if (this->xsize < 1 || this->ysize < 1 || this->graph == (Vertex*)nullptr) {
+        throw std::runtime_error("INTERNAL ERROR: uninitialized Graph object.");
+        return 0;
+    }
+
+    return 1;
+}
+
+void Graph::util_uninit() {
+    this->xsize = -1;
+    this->ysize = -1;
+    if (this->graph) { 
+        delete[] this->graph;
+        this->graph = (Vertex*)nullptr;
     }
 }
 
-Graph::Graph(FILE* fhook) {
+void Graph::init_by_file_template(const char* filepath) {
+    FILE* fhook;
+
+    fhook = fopen(filepath, "r");
+
     if (fhook) {
         int i, j;
         char curr_char;
         Vertex* curr_vertex;
+
+        this->util_uninit();
 
         file_check_line_comment(fhook, '#');
         if (feof(fhook)) throw std::runtime_error("FILE ERROR: Bad formatting. No template header.");
@@ -125,13 +143,21 @@ Graph::Graph(FILE* fhook) {
         #ifdef ASTAR_DEBUG
         DEBUG_graphall_print(*this);
         #endif
+
     }
     else {
-        throw std::runtime_error("FILE ERROR: Empty file pointer");
+        char _FILE_ERROR[42] = {'F', 'I', 'L', 'E', ' ', 'E', 'R', 'R', 'O', 'R', ':', ' ', '\0'};
+        char *_errmessage = strcat(_FILE_ERROR, strerror(errno));
+        throw std::runtime_error(_errmessage);
     }
+
+    fclose(fhook);
 }
 
 Graph::~Graph() {
-    delete[] this->graph;
+    if (this->graph) { 
+        delete[] this->graph;
+        this->graph = (Vertex*)nullptr;
+    }
 }
 
