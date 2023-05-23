@@ -81,6 +81,21 @@ void callback_load(Application& app)
 
 }
 
+void callback_diagonal(Application& app)
+{
+
+}
+
+void callback_sel_astar(Application& app)
+{
+
+}
+
+void callback_sel_dijkstra(Application& app)
+{
+
+}
+
 void callback_for_solver()
 {
 	if (g_appPtr == nullptr || !g_appPtr->m_isSolving)

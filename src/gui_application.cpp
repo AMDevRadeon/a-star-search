@@ -242,6 +242,9 @@ void Application::create_main_window()
 	access_widget<Button>(B_RESIZE, RESIZE, x += m_iconWidth, y, &callback_resize);
 	access_widget<Button>(B_RANDOMIZE, RANDOMIZE, x += m_iconWidth, y, &callback_randomize);
 	access_widget<Button>(B_LOAD, LOAD, x += m_iconWidth, y, &callback_load);
+	access_widget<Button>(B_DIAGONAL, DIAGONAL, x += m_iconWidth, y, &callback_diagonal);
+	access_widget<Button>(B_ASTAR, ASTAR, x += m_iconWidth, y, &callback_sel_astar);
+	access_widget<Button>(B_DIJKSTRA, DIJKSTRA, x += m_iconWidth, y, &callback_sel_dijkstra);
 }
 
 void Application::destroy_window()
@@ -279,6 +282,9 @@ void Application::refresh_buttons()
 	Button& resize  = access_widget<Button>(B_RESIZE);
 	Button& random  = access_widget<Button>(B_RANDOMIZE);
 	Button& load    = access_widget<Button>(B_LOAD);
+	Button& diag    = access_widget<Button>(B_DIAGONAL);
+	Button& astar   = access_widget<Button>(B_ASTAR);
+	Button& dijk    = access_widget<Button>(B_DIJKSTRA);
 
 	const bool b = !m_isSolving;
 	play.m_textureID = m_isSolving ? STOP : PLAY;
@@ -292,6 +298,9 @@ void Application::refresh_buttons()
 	resize.m_enabled  = b;
 	random.m_enabled  = b;
 	load.m_enabled    = b;
+	diag.m_enabled    = b;
+	astar.m_enabled   = b;
+	dijk.m_enabled    = b;
 
 	cursor.m_selected  = m_mode == B_CURSOR;
 	fstart.m_selected  = m_mode == B_FLAG_START;
