@@ -58,13 +58,28 @@ void Application::update()
 {
 	static bool s_isPressed = false;
 
+	bool pending;
 	SDL_Event sdlEvent{};
-	SDL_WaitEvent(&sdlEvent);
+
+	if (m_isSolving)
+	{
+		next_event:
+		pending = SDL_PollEvent(&sdlEvent);
+	}
+	else
+		pending = SDL_WaitEvent(&sdlEvent);
+
+	if (!pending)
+		return;
 
 	if (sdlEvent.type == SDL_QUIT)
+	{
 		m_isRunning = false;
+		m_isSolving = false;
+		return;
+	}
 
-	if (sdlEvent.type == SDL_KEYDOWN)
+	if (sdlEvent.type == SDL_KEYDOWN && !m_isSolving)
 	{
 		if (sdlEvent.key.keysym.sym == SDLK_TAB)
 		{
@@ -82,13 +97,13 @@ void Application::update()
 	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
 		handled |= crr -> handle_event(sdlEvent);
 
-	if (handled)
-		return;
+	if (handled || m_isSolving)
+		goto next_event;
 
 	if (m_mode == B_CURSOR)
 	{
 		m_viewport.update(sdlEvent);
-		return;
+		goto next_event;
 	}
 
 	int xmouse, ymouse;
@@ -97,13 +112,13 @@ void Application::update()
 	m_viewport.to_world(xmouse, ymouse, xmouse, ymouse);
 
 	if (!s_isPressed || xmouse < 0 || ymouse < 0)
-		return;
+		goto next_event;
 
 	xmouse /= g_defaultVertexSize;
 	ymouse /= g_defaultVertexSize;
 
 	if (xmouse >= m_matrixWidth || ymouse >= m_matrixHeight)
-		return;
+		goto next_event;
 
 	Vertex& vertex = m_matrix[ymouse * m_matrixWidth + xmouse];
 	const bool isFlag = &vertex == m_vertStart || &vertex == m_vertStop;
@@ -123,6 +138,8 @@ void Application::update()
 		case B_ACTIVATE: vertex.is_active = true; break;
 		case B_DEACTIVATE: vertex.is_active = isFlag;
 	}
+
+	goto next_event;
 }
 
 void Application::load_icons()
@@ -250,13 +267,37 @@ void Application::destroy_window()
 	}
 }
 
-void Application::refresh_mode()
+void Application::refresh_buttons()
 {
-	access_widget<Button>(B_CURSOR).m_selected = m_mode == B_CURSOR;
-	access_widget<Button>(B_FLAG_START).m_selected = m_mode == B_FLAG_START;
-	access_widget<Button>(B_FLAG_STOP).m_selected = m_mode == B_FLAG_STOP;
-	access_widget<Button>(B_ACTIVATE).m_selected = m_mode == B_ACTIVATE;
-	access_widget<Button>(B_DEACTIVATE).m_selected = m_mode == B_DEACTIVATE;
+	Button& play    = access_widget<Button>(B_PLAY);
+	Button& reset   = access_widget<Button>(B_RESET);
+	Button& cursor  = access_widget<Button>(B_CURSOR);
+	Button& fstart  = access_widget<Button>(B_FLAG_START);
+	Button& fstop   = access_widget<Button>(B_FLAG_STOP);
+	Button& activ   = access_widget<Button>(B_ACTIVATE);
+	Button& deactiv = access_widget<Button>(B_DEACTIVATE);
+	Button& resize  = access_widget<Button>(B_RESIZE);
+	Button& random  = access_widget<Button>(B_RANDOMIZE);
+	Button& load    = access_widget<Button>(B_LOAD);
+
+	const bool b = !m_isSolving;
+	play.m_textureID = m_isSolving ? STOP : PLAY;
+
+	reset.m_enabled   = b;
+	cursor.m_enabled  = b;
+	fstart.m_enabled  = b;
+	fstop.m_enabled   = b;
+	activ.m_enabled   = b;
+	deactiv.m_enabled = b;
+	resize.m_enabled  = b;
+	random.m_enabled  = b;
+	load.m_enabled    = b;
+
+	cursor.m_selected  = m_mode == B_CURSOR;
+	fstart.m_selected  = m_mode == B_FLAG_START;
+	fstop.m_selected   = m_mode == B_FLAG_STOP;
+	activ.m_selected   = m_mode == B_ACTIVATE;
+	deactiv.m_selected = m_mode == B_DEACTIVATE;
 }
 
 Application::Application()
@@ -279,7 +320,7 @@ void Application::run()
 {
 	create_main_window();
 	create_matrix();
-	refresh_mode();
+	refresh_buttons();
 
 	while (m_isRunning)
 	{

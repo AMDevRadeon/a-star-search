@@ -33,6 +33,7 @@ struct Application
 {
 	int m_mode = B_CURSOR;
 	bool m_isRunning = true;
+	bool m_isSolving = false;
 	float m_defaultScale = 1.0f;
 
 	int m_iconWidth = 0;
@@ -60,7 +61,7 @@ struct Application
 	void create_matrix();
 	void create_main_window();
 	void destroy_window();
-	void refresh_mode();
+	void refresh_buttons();
 
 	template <typename Type, typename... Args>
 	Type& access_widget(int id, Args... args);

@@ -13,3 +13,5 @@ void callback_resize(Application& app);
 void callback_randomize(Application& app);
 void callback_load(Application& app);
 
+extern Application* g_appPtr;
+void callback_for_solver();
