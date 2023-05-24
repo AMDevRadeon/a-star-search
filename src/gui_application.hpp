@@ -35,6 +35,8 @@ struct Application
 	int m_mode = B_CURSOR;
 	bool m_isRunning = true;
 	bool m_isSolving = false;
+	bool m_isDiagonal = false;
+	bool m_isDijkstra = false;
 	float m_defaultScale = 1.0f;
 
 	int m_iconWidth = 0;

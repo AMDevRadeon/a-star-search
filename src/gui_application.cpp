@@ -307,6 +307,10 @@ void Application::refresh_buttons()
 	fstop.m_selected   = m_mode == B_FLAG_STOP;
 	activ.m_selected   = m_mode == B_ACTIVATE;
 	deactiv.m_selected = m_mode == B_DEACTIVATE;
+
+	diag.m_selected    = m_isDiagonal;
+	astar.m_selected   = !m_isDijkstra;
+	dijk.m_selected    = m_isDijkstra;
 }
 
 Application::Application()

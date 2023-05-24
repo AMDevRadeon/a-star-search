@@ -5,23 +5,28 @@ Application* g_appPtr = nullptr;
 
 void callback_play(Application& app)
 {
-	if (app.m_isSolving)
-		goto stop;
-
-	g_appPtr = &app;
-	app.m_isSolving = true;
-
-	app.refresh_buttons();
-	app.draw();
-
-	// TODO: Remove
-	for (int i = 0; i < 100; i++)
+	if (!app.m_isSolving)
 	{
-		app.m_matrix[i].is_active = !app.m_matrix[i].is_active;
-		callback_for_solver();
+		g_appPtr = &app;
+		app.m_isSolving = true;
+
+		for (Vertex& vertex : app.m_matrix)
+			vertex.state = AVAILABLE;
+
+		app.refresh_buttons();
+		app.draw();
+
+		// TODO: Remove
+		for (Vertex& vertex : app.m_matrix)
+		{
+			if ((vertex.xpos + vertex.ypos) & 1)
+				vertex.state = OPEN;
+			else
+				vertex.is_active = !vertex.is_active;
+			callback_for_solver();
+		}
 	}
 
-	stop:
 	app.m_isSolving = false;
 	app.refresh_buttons();
 	app.draw();
@@ -83,17 +88,20 @@ void callback_load(Application& app)
 
 void callback_diagonal(Application& app)
 {
-
+	app.m_isDiagonal = !app.m_isDiagonal;
+	app.refresh_buttons();
 }
 
 void callback_sel_astar(Application& app)
 {
-
+	app.m_isDijkstra = false;
+	app.refresh_buttons();
 }
 
 void callback_sel_dijkstra(Application& app)
 {
-
+	app.m_isDijkstra = true;
+	app.refresh_buttons();
 }
 
 void callback_for_solver()
@@ -104,5 +112,5 @@ void callback_for_solver()
 	g_appPtr->update();
 	g_appPtr->draw();
 
-	SDL_Delay(30);
+	SDL_Delay(10);
 }
