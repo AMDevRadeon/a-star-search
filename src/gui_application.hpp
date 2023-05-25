@@ -27,7 +27,7 @@ enum WidgetID
 	B_PLAY, B_RESET, B_CURSOR, B_FLAG_START,
 	B_FLAG_STOP, B_ACTIVATE, B_DEACTIVATE, B_RESIZE,
 	B_RANDOMIZE, B_LOAD, B_DIAGONAL, B_ASTAR,
-	B_DIJKSTRA, B_OK
+	B_DIJKSTRA, B_OK, T_DESCRIPTION
 };
 
 struct Application
@@ -39,12 +39,17 @@ struct Application
 	bool m_isDijkstra = false;
 	float m_defaultScale = 1.0f;
 
+	int m_windowWidth = 0;
+	int m_windowHeight = 0;
+
 	int m_iconWidth = 0;
 	int m_iconHeight = 0;
 	int m_iconCount = 0;
 
 	int m_matrixWidth = 21;
 	int m_matrixHeight = 16;
+
+	const char* m_description = nullptr;
 
 	Viewport m_viewport;
 	std::vector<Vertex> m_matrix;
@@ -56,9 +61,12 @@ struct Application
 	SDL_Window* m_window = nullptr;
 	SDL_Renderer* m_renderer = nullptr;
 	SDL_Texture* m_icons = nullptr;
+	TTF_Font* m_font = nullptr;
 
 	void draw();
 	void update();
+	void load_font();
+	void unload_font();
 	void load_icons();
 	void unload_icons();
 	void create_matrix();

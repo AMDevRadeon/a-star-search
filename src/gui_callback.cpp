@@ -13,7 +13,11 @@ void callback_play(Application& app)
 		for (Vertex& vertex : app.m_matrix)
 			vertex.state = AVAILABLE;
 
+		SDL_Event sdlEvent{};
+		SDL_PushEvent(&sdlEvent);
+
 		app.refresh_buttons();
+		app.update();
 		app.draw();
 
 		// TODO: Remove

@@ -48,6 +48,10 @@ void Application::draw()
 		}
 	}
 
+	SDL_Rect rect{ 0, m_windowHeight - m_iconHeight, m_windowWidth, m_iconHeight };
+	SDL_SetRenderDrawColor(m_renderer, g_fontBgColor.r, g_fontBgColor.g, g_fontBgColor.b, g_fontBgColor.a);
+	SDL_RenderFillRect(m_renderer, &rect);
+
 	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
 		crr -> draw();
 
@@ -93,9 +97,18 @@ void Application::update()
 	else if (sdlEvent.type == SDL_MOUSEBUTTONUP)
 		s_isPressed = false;
 
+	static const char* s_prevDescription = nullptr;
+	m_description = nullptr;
+
 	bool handled = false;
 	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
 		handled |= crr -> handle_event(sdlEvent);
+
+	if (s_prevDescription != m_description)
+	{
+		s_prevDescription = m_description;
+		access_widget<Text>(T_DESCRIPTION).set(m_description);
+	}
 
 	if (handled || m_isSolving)
 		goto next_event;
@@ -140,6 +153,24 @@ void Application::update()
 	}
 
 	goto next_event;
+}
+
+void Application::load_font()
+{
+	unload_font();
+	m_font = TTF_OpenFont(g_fontPath, g_fontSize);
+
+	if (m_font == nullptr)
+		m_isRunning = false; // TODO: Add exceptions
+}
+
+void Application::unload_font()
+{
+	if (m_font != nullptr)
+	{
+		TTF_CloseFont(m_font);
+		m_font = nullptr;
+	}
 }
 
 void Application::load_icons()
@@ -222,6 +253,8 @@ void Application::create_main_window()
 	}
 
 	height += g_windowExtraHeight;
+	m_windowWidth = width;
+	m_windowHeight = height;
 
 	m_viewport.m_scale = m_defaultScale;
 	m_window = SDL_CreateWindow("A* Pathfinding", pos, pos, width, height, 0);
@@ -245,6 +278,7 @@ void Application::create_main_window()
 	access_widget<Button>(B_DIAGONAL, DIAGONAL, x += m_iconWidth, y, &callback_diagonal);
 	access_widget<Button>(B_ASTAR, ASTAR, x += m_iconWidth, y, &callback_sel_astar);
 	access_widget<Button>(B_DIJKSTRA, DIJKSTRA, x += m_iconWidth, y, &callback_sel_dijkstra);
+	access_widget<Text>(T_DESCRIPTION, x += m_iconWidth + g_descriptionXOffset, y += g_descriptionYOffset);
 }
 
 void Application::destroy_window()
@@ -323,6 +357,7 @@ Application::Application()
 Application::~Application()
 {
 	destroy_window();
+	unload_font();
 
 	TTF_Quit();
 	IMG_Quit();
@@ -331,6 +366,7 @@ Application::~Application()
 
 void Application::run()
 {
+	load_font();
 	create_main_window();
 	create_matrix();
 	refresh_buttons();

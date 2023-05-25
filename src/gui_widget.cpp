@@ -55,5 +55,40 @@ bool Button::handle_event(SDL_Event& sdlEvent)
 		ret = m_hover;
 	}
 
+	if (m_hover && m_enabled)
+		m_app.m_description = g_descriptions[m_textureID];
+
 	return ret;
+}
+
+void Text::clear()
+{
+	if (m_text != nullptr)
+	{
+		SDL_DestroyTexture(m_text);
+		m_text = nullptr;
+	}
+}
+
+void Text::draw()
+{
+	if (m_text != nullptr)
+	{
+		const SDL_Rect dest{ m_xpos, m_ypos, m_xsize, m_ysize };
+		SDL_RenderCopy(m_app.m_renderer, m_text, nullptr, &dest);
+	}
+}
+
+void Text::set(const char* text)
+{
+	clear();
+	if (text != nullptr)
+	{
+		SDL_Surface* surface = TTF_RenderUTF8_Blended(m_app.m_font, text, g_fontColor);
+		m_text = SDL_CreateTextureFromSurface(m_app.m_renderer, surface);
+
+		SDL_SetTextureBlendMode(m_text, SDL_BLENDMODE_BLEND);
+		SDL_FreeSurface(surface);
+		SDL_QueryTexture(m_text, nullptr, nullptr, &m_xsize, &m_ysize);
+	}
 }

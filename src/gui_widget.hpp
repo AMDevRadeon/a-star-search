@@ -50,3 +50,22 @@ struct Button : public Widget
 	void draw() override;
 	bool handle_event(SDL_Event& sdlEvent) override;
 };
+
+struct Text : public Widget
+{
+	int m_xpos = 0;
+	int m_ypos = 0;
+	int m_xsize = 0;
+	int m_ysize = 0;
+
+	SDL_Texture* m_text = nullptr;
+
+	Text() = default;
+	Text(int x, int y) : m_xpos(x), m_ypos(y) {}
+	Text(int x, int y, const char* text) : m_xpos(x), m_ypos(y) { set(text); }
+	~Text() { clear(); }
+
+	void clear();
+	void draw() override;
+	void set(const char* text);
+};
