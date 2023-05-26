@@ -4,9 +4,13 @@
 inline constexpr float g_scaleStep = 0.25f;
 inline constexpr float g_xResFactor = 0.8f;
 inline constexpr float g_yResFactor = 0.8f;
-inline constexpr int g_xMinRes = 300;
-inline constexpr int g_yMinRes = 300;
+inline constexpr float g_gridThreshold = 10.0f;
+inline constexpr int g_defMatWidth = 21;
+inline constexpr int g_defMatHeight = 16;
+inline constexpr int g_xMinRes = 900;
+inline constexpr int g_yMinRes = 400;
 inline constexpr int g_fontSize = 24;
+inline constexpr int g_stepDelay = 10;
 inline constexpr int g_windowExtraHeight = 48;
 inline constexpr int g_defaultVertexSize = 48;
 inline constexpr int g_descriptionXOffset = 8;

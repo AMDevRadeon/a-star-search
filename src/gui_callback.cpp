@@ -10,6 +10,7 @@ void callback_play(Application& app)
 		g_appPtr = &app;
 		app.m_isSolving = true;
 
+		// TODO: Soft reset?
 		for (Vertex& vertex : app.m_matrix)
 			vertex.state = AVAILABLE;
 
@@ -20,7 +21,7 @@ void callback_play(Application& app)
 		app.update();
 		app.draw();
 
-		// TODO: Remove
+		// TODO: Replace with proper solve function call
 		for (Vertex& vertex : app.m_matrix)
 		{
 			if ((vertex.xpos + vertex.ypos) & 1)
@@ -29,6 +30,7 @@ void callback_play(Application& app)
 				vertex.is_active = !vertex.is_active;
 			callback_for_solver();
 		}
+		// ---------------------------------------------
 	}
 
 	app.m_isSolving = false;
@@ -77,17 +79,17 @@ void callback_deactivate(Application& app)
 
 void callback_resize(Application& app)
 {
-
+	// TODO: Write implementation
 }
 
 void callback_randomize(Application& app)
 {
-
+	// TODO: Write implementation
 }
 
 void callback_load(Application& app)
 {
-
+	// TODO: Write implementation
 }
 
 void callback_diagonal(Application& app)
@@ -116,5 +118,5 @@ void callback_for_solver()
 	g_appPtr->update();
 	g_appPtr->draw();
 
-	SDL_Delay(10);
+	SDL_Delay(g_stepDelay);
 }

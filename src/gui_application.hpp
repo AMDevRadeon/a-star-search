@@ -46,8 +46,8 @@ struct Application
 	int m_iconHeight = 0;
 	int m_iconCount = 0;
 
-	int m_matrixWidth = 21;
-	int m_matrixHeight = 16;
+	int m_matrixWidth = g_defMatWidth;
+	int m_matrixHeight = g_defMatHeight;
 
 	const char* m_description = nullptr;
 

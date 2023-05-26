@@ -9,7 +9,7 @@ void Application::draw()
 
 	for (Vertex& vertex : m_matrix)
 	{
-		int colorIndex = 0;
+		int colorIndex;
 
 		if (!vertex.is_active)
 			colorIndex = 1;
@@ -17,7 +17,8 @@ void Application::draw()
 		{
 			case OPEN:   colorIndex = 2; break;
 			case CLOSED: colorIndex = 3; break;
-			case PATH:   colorIndex = 4;
+			case PATH:   colorIndex = 4; break;
+			default:     colorIndex = 0;
 		}
 
 		auto& color = g_colors[colorIndex];
@@ -29,11 +30,11 @@ void Application::draw()
 		SDL_FRect rect{ x, y, g_defaultVertexSize, g_defaultVertexSize };
 		m_viewport.rect_to_screen(rect, rect);
 
-		rect.x += 1.0f; rect.w -= 2.0f;
-		rect.y += 1.0f; rect.h -= 2.0f;
-
-		if (rect.w <= 0)
-			break;
+		if (rect.w >= g_gridThreshold)
+		{
+			rect.x += 1.0f; rect.w -= 2.0f;
+			rect.y += 1.0f; rect.h -= 2.0f;
+		}
 
 		SDL_RenderFillRectF(m_renderer, &rect);
 		if (&vertex == m_vertStart || &vertex == m_vertStop)
