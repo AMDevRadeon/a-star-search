@@ -1,6 +1,9 @@
 #include "common.hpp"
 #define ASTAR_DEBUG
 
+static const int movement[8][2] = {{0,1},{-1,0},{1,0},{0,-1},{-1,1},{1,1},{-1,-1},{1,-1}};
+static const double dist[8] = {1.0, 1.0, 1.0, 1.0, 1.414213, 1.414213, 1.414213, 1.414213};
+
 static void file_check_line_comment(FILE* fhook, const char comm) {
         char curr_char;
 
@@ -15,9 +18,10 @@ static void file_check_line_comment(FILE* fhook, const char comm) {
 }
 
 #ifdef ASTAR_DEBUG
-void DEBUG_graphall_print(Graph &graph) {
+void DEBUG_graphall_print(Graph &graph, Vertex *&vertex, Vertex *&neighbour_vertex) {
     int xsize = graph.get_xsize(), ysize = graph.get_ysize();
     Vertex* curr_vertex;
+    /*
     printf("%d %d\n", xsize, ysize);
     for (int i = 0; i < ysize; i++) {
         for (int j = 0; j < xsize; j++) {
@@ -31,7 +35,47 @@ void DEBUG_graphall_print(Graph &graph) {
         }
         printf("\n");
     }
+    */
+    printf("\n");
+    for (int i = 0; i < ysize; i++) {
+        for (int j = 0; j < xsize; j++) {
+            curr_vertex = graph.get_vertex(j,i);
+            if (curr_vertex == neighbour_vertex) {
+                printf("!");
+            }
+            else if (curr_vertex == graph.start) {
+                printf("%%");
+            }
+            else if (curr_vertex == graph.stop) {
+                printf("$");
+            }
+            else if (curr_vertex == vertex) {
+                printf("*");
+            }
+            else if (!curr_vertex->is_active) {
+                printf("@");
+            }
+            else if (curr_vertex->state == AVAILABLE) {
+                printf("-");
+            }
+            else if (curr_vertex->state == OPEN) {
+                printf("x");
+            }
+            else if (curr_vertex->state == CLOSED) {
+                printf(":");
+            }
+        }
+        printf("\n");
+    }
+    printf("curr->fcost: %lf\n", vertex->fcost);
+    printf("curr->gcost: %lf\n", vertex->gcost);
+    printf("curr->hcost: %lf\n", vertex->hcost);
+    printf("neigh->curr: (%d, %d)\n", neighbour_vertex->xpos, neighbour_vertex->ypos);
+    printf("neigh->fcost: %lf\n", neighbour_vertex->fcost);
+    printf("curr: (%d, %d)\n", vertex->xpos, vertex->ypos);
+    if (vertex->previous) printf("curr->prev: (%d, %d)\n", vertex->previous->xpos, vertex->previous->ypos);
 
+/*    
     for (int i = 0; i < ysize; i++) {
         for (int j = 0; j < xsize; j++) {
             curr_vertex = graph.get_vertex(j,i);
@@ -41,6 +85,16 @@ void DEBUG_graphall_print(Graph &graph) {
     }
 
     printf("start:(%d %d), stop(%d, %d)", graph.start->xpos, graph.start->ypos, graph.stop->xpos, graph.stop->ypos);
+    */
+}
+
+void DEBUG_callback_astar() {
+    // char n;
+    // scanf(" %c", &n);
+
+    printf("///////////////////////////////////////////////////////////////////\n");
+    printf("/=================================================================/\n");
+    printf("///////////////////////////////////////////////////////////////////\n");
 }
 #endif
 
@@ -63,10 +117,12 @@ Graph::Graph() {
     this->xsize = -1;
     this->ysize = -1;
     this->graph = (Vertex*)nullptr;
+    this->start = (Vertex*)nullptr;
+    this->stop = (Vertex*)nullptr;
 }
 
 int Graph::util_check_init() {
-    if (this->xsize < 1 || this->ysize < 1 || this->graph == (Vertex*)nullptr) {
+    if (this->xsize < 1 || this->ysize < 1 || this->graph == (Vertex*)nullptr || this->start == (Vertex*)nullptr || this->stop == (Vertex*)nullptr) {
         throw std::runtime_error("INTERNAL ERROR: uninitialized Graph object.");
         return 0;
     }
@@ -81,6 +137,8 @@ void Graph::util_uninit() {
         delete[] this->graph;
         this->graph = (Vertex*)nullptr;
     }
+    this->start = (Vertex*)nullptr;
+    this->stop = (Vertex*)nullptr;
 }
 
 void Graph::init_by_file_template(const char* filepath) {
@@ -140,10 +198,6 @@ void Graph::init_by_file_template(const char* filepath) {
         this->start = this->get_vertex(coordinates[0], coordinates[1]);
         this->stop = this->get_vertex(coordinates[2], coordinates[3]);
 
-        #ifdef ASTAR_DEBUG
-        DEBUG_graphall_print(*this);
-        #endif
-
     }
     else {
         char _FILE_ERROR[42] = {'F', 'I', 'L', 'E', ' ', 'E', 'R', 'R', 'O', 'R', ':', ' ', '\0'};
@@ -159,5 +213,139 @@ Graph::~Graph() {
         delete[] this->graph;
         this->graph = (Vertex*)nullptr;
     }
+}
+
+
+/*
+ * ALGORYTMY SORTUJĄCE
+ */
+
+double euclidean_dist(Vertex *const& a, Vertex *const& b) {
+    return std::sqrt(std::pow(a->xpos - b->xpos, 2.) + std::pow(a->ypos - b->ypos, 2.));
+}
+
+// void solve_astar(Graph& graph, bool diagonal_allowed, void (*callback)()) {
+//     graph.util_check_init();
+
+//     int i;
+//     Vertex* curr_vertex, * neighbour_curr_vertex;
+//     double curr_neighbour_gcost;
+//     bool is_curr_path_optimal;
+//     vertex_heap openset;
+
+//     openset.push(graph.start);
+
+//     while (!openset.empty()) {
+//         printf("|===================================================================|\n");
+//         curr_vertex = openset.top();
+//         if (curr_vertex == graph.stop) {
+//             // ZWYCIĘSTWO
+//             printf("Udało się znaleźć ścieżkę");
+//         }
+//         openset.pop();
+//         curr_vertex->state = CLOSED;
+//         for (i = 0; i < ((diagonal_allowed) ? 8 : 4); i++) {
+//             neighbour_curr_vertex = graph.get_vertex(curr_vertex->xpos + movement[i][0], curr_vertex->ypos + movement[i][1]);
+
+//             if (neighbour_curr_vertex == (Vertex*)nullptr) continue;
+//             if (neighbour_curr_vertex->state == CLOSED || !neighbour_curr_vertex->is_active) continue;
+
+//             curr_neighbour_gcost = curr_vertex->gcost + dist[i];
+//             is_curr_path_optimal = false;
+
+//             if (!openset.exists(neighbour_curr_vertex)) {
+//                 openset.insert(neighbour_curr_vertex);
+//                 neighbour_curr_vertex->hcost = euclidean_dist(neighbour_curr_vertex, graph.stop);
+//                 is_curr_path_optimal = true;
+//             }
+//             else if (curr_neighbour_gcost < neighbour_curr_vertex->gcost) {
+//                 is_curr_path_optimal = true;
+//             }
+
+//             neighbour_curr_vertex->state = OPEN;
+
+//             if (is_curr_path_optimal) {
+//                 neighbour_curr_vertex->previous = curr_vertex;
+//                 neighbour_curr_vertex->gcost = curr_neighbour_gcost;
+//                 neighbour_curr_vertex->fcost = neighbour_curr_vertex->gcost + neighbour_curr_vertex->hcost;
+//                 openset.heapify();
+//             }
+
+//             // DEBUG_graphall_print(graph, curr_vertex, neighbour_curr_vertex);
+//             // openset.DEBUG_dump_heap_content();
+//             // printf("heap: %d\n", std::is_heap(openset.heap.cbegin(), openset.heap.cend(), openset.comp));
+//         }
+
+
+//         callback();
+//     }
+//     // PORAŻKA
+//     printf("Nie udało się znaleźć ścieżki.");
+// }
+
+void solve_astar(Graph& graph, bool diagonal_allowed, void (*callback)()) {
+    graph.util_check_init();
+
+    int i;
+    Vertex* curr_vertex, * neighbour_curr_vertex;
+    double curr_neighbour_gcost;
+    bool is_curr_path_optimal;
+    std::vector<Vertex*> openset;
+
+    openset.push_back(graph.start);
+
+    while (!openset.empty()) {
+        curr_vertex = openset.front();
+        for (std::vector<Vertex*>::iterator ii = openset.begin() + 1; ii != openset.cend(); ii++ ) {
+            if (ii.operator*()->fcost < curr_vertex->fcost) curr_vertex = ii.operator*();
+        }
+
+        if (curr_vertex == graph.stop) {
+            // ZWYCIĘSTWO
+            printf("Udało się znaleźć ścieżkę");
+            return;
+        }
+
+        openset.erase(std::find(openset.begin(), openset.end(), curr_vertex));
+        curr_vertex->state = CLOSED;
+        for (i = 0; i < ((diagonal_allowed) ? 8 : 4); i++) {
+            neighbour_curr_vertex = graph.get_vertex(curr_vertex->xpos + movement[i][0], curr_vertex->ypos + movement[i][1]);
+
+            if (neighbour_curr_vertex == (Vertex*)nullptr) continue;
+            if (neighbour_curr_vertex->state == CLOSED || !neighbour_curr_vertex->is_active) continue;
+
+            curr_neighbour_gcost = curr_vertex->gcost + dist[i];
+            is_curr_path_optimal = false;
+
+            if (std::find(openset.begin(), openset.end(), neighbour_curr_vertex) == openset.end()) {
+                openset.push_back(neighbour_curr_vertex);
+                neighbour_curr_vertex->hcost = euclidean_dist(neighbour_curr_vertex, graph.stop);
+                is_curr_path_optimal = true;
+            }
+            else if (curr_neighbour_gcost < neighbour_curr_vertex->gcost) {
+                is_curr_path_optimal = true;
+            }
+
+            neighbour_curr_vertex->state = OPEN;
+
+            if (is_curr_path_optimal) {
+                neighbour_curr_vertex->previous = curr_vertex;
+                neighbour_curr_vertex->gcost = curr_neighbour_gcost;
+                neighbour_curr_vertex->fcost = neighbour_curr_vertex->gcost + neighbour_curr_vertex->hcost;
+            }
+
+            DEBUG_graphall_print(graph, curr_vertex, neighbour_curr_vertex);
+            // for (Vertex* ii: openset) {
+            //     printf("%p %lf %lf %lf\n", ii, ii->fcost, ii->gcost, ii->hcost);
+            // }
+            // printf("\n");
+            // printf("heap: %d\n", std::is_heap(openset.heap.cbegin(), openset.heap.cend(), openset.comp));
+        }
+
+
+        callback();
+    }
+    // PORAŻKA
+    printf("Nie udało się znaleźć ścieżki.");
 }
 

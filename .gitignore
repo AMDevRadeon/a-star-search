@@ -30,7 +30,3 @@
 *.exe
 *.out
 *.app
-
-./vscode
-src/test.cpp
-test
