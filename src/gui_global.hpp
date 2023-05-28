@@ -11,11 +11,12 @@ inline constexpr int g_xMinRes = 900;
 inline constexpr int g_yMinRes = 400;
 inline constexpr int g_fontSize = 24;
 inline constexpr int g_stepDelay = 10;
+inline constexpr int g_vertexSize = 48;
 inline constexpr int g_windowExtraHeight = 48;
-inline constexpr int g_defaultVertexSize = 48;
 inline constexpr int g_descriptionXOffset = 8;
 inline constexpr int g_descriptionYOffset = 10;
 
+inline const char* const g_windowTitle = "A* Pathfinding";
 inline const char* const g_iconsPath = "icons.png";
 inline const char* const g_fontPath = "RobotoCondensed-Regular.ttf";
 

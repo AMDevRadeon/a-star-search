@@ -1,9 +1,21 @@
 #include "gui_application.hpp"
 
-int main()
-{
-	Application application;
-	application.run();
+#include <cstdlib>
+#include <iostream>
+#include <stdexcept>
 
-	return 0;
+int main(int, char**)
+{
+	try
+	{
+		Application application;
+		application.run();
+	}
+	catch (const std::exception& error)
+	{
+		std::cerr << error.what() << '\n';
+		return EXIT_FAILURE;
+	}
+
+	return EXIT_SUCCESS;
 }

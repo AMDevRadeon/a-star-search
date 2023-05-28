@@ -24,10 +24,10 @@ void Application::draw()
 		auto& color = g_colors[colorIndex];
 		SDL_SetRenderDrawColor(m_renderer, std::get<0>(color), std::get<1>(color), std::get<2>(color), 0xFF);
 
-		const float x = static_cast<float>(vertex.xpos * g_defaultVertexSize);
-		const float y = static_cast<float>(vertex.ypos * g_defaultVertexSize);
+		const float x = static_cast<float>(vertex.xpos * g_vertexSize);
+		const float y = static_cast<float>(vertex.ypos * g_vertexSize);
 
-		SDL_FRect rect{ x, y, g_defaultVertexSize, g_defaultVertexSize };
+		SDL_FRect rect{ x, y, g_vertexSize, g_vertexSize };
 		m_viewport.rect_to_screen(rect, rect);
 
 		if (rect.w >= g_gridThreshold)
@@ -53,8 +53,8 @@ void Application::draw()
 	SDL_SetRenderDrawColor(m_renderer, g_fontBgColor.r, g_fontBgColor.g, g_fontBgColor.b, g_fontBgColor.a);
 	SDL_RenderFillRect(m_renderer, &rect);
 
-	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
-		crr -> draw();
+	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr->m_next)
+		crr->draw();
 
 	SDL_RenderPresent(m_renderer);
 }
@@ -102,8 +102,8 @@ void Application::update()
 	m_description = nullptr;
 
 	bool handled = false;
-	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
-		handled |= crr -> handle_event(sdlEvent);
+	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr->m_next)
+		handled |= crr->handle_event(sdlEvent);
 
 	if (s_prevDescription != m_description)
 	{
@@ -128,8 +128,8 @@ void Application::update()
 	if (!s_isPressed || xmouse < 0 || ymouse < 0)
 		goto next_event;
 
-	xmouse /= g_defaultVertexSize;
-	ymouse /= g_defaultVertexSize;
+	xmouse /= g_vertexSize;
+	ymouse /= g_vertexSize;
 
 	if (xmouse >= m_matrixWidth || ymouse >= m_matrixHeight)
 		goto next_event;
@@ -232,8 +232,8 @@ void Application::create_main_window()
 	const int xMaxRes = dm.w * g_xResFactor;
 	const int yMaxRes = dm.h * g_yResFactor;
 
-	int width = m_matrixWidth * g_defaultVertexSize;
-	int height = m_matrixHeight * g_defaultVertexSize;
+	int width = m_matrixWidth * g_vertexSize;
+	int height = m_matrixHeight * g_vertexSize;
 
 	m_defaultScale = 1.0f;
 
@@ -258,7 +258,7 @@ void Application::create_main_window()
 	m_windowHeight = height;
 
 	m_viewport.m_scale = m_defaultScale;
-	m_window = SDL_CreateWindow("A* Pathfinding", pos, pos, width, height, 0);
+	m_window = SDL_CreateWindow(g_windowTitle, pos, pos, width, height, 0);
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
 	load_icons();

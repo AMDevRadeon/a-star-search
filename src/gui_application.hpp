@@ -86,9 +86,9 @@ struct Application
 template <typename Type, typename... Args>
 Type& Application::access_widget(int id, Args... args)
 {
-	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr -> m_next)
+	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr->m_next)
 	{
-		if (crr -> m_id != id)
+		if (crr->m_id != id)
 			continue;
 
 		Type* const ptr = dynamic_cast<Type*>(crr);
@@ -98,8 +98,8 @@ Type& Application::access_widget(int id, Args... args)
 	Widget::s_appPointer = this;
 	Type* const ptr = new Type(args...);
 
-	ptr -> m_id = id;
-	ptr -> m_next = m_widgetList;
+	ptr->m_id = id;
+	ptr->m_next = m_widgetList;
 	m_widgetList = ptr;
 
 	return *ptr;
