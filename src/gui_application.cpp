@@ -1,6 +1,9 @@
 #include "gui_application.hpp"
 #include "gui_callback.hpp"
 
+#include <iostream>
+#include <stdexcept>
+
 void Application::draw()
 {
 	SDL_SetRenderTarget(m_renderer, nullptr);
@@ -206,17 +209,41 @@ void Application::unload_icons()
 
 void Application::create_matrix()
 {
-	m_matrix.clear();
-	m_matrix.resize(m_matrixWidth * m_matrixHeight);
-
-	int index = 0;
-	for (int y = 0; y < m_matrixHeight; y++)
+	if (m_matrix.empty())
 	{
-		for (int x = 0; x < m_matrixWidth; x++)
+		try
 		{
-			m_matrix[index].xpos = x;
-			m_matrix[index].ypos = y;
-			index++;
+			Graph graph;
+			graph.init_by_file_template("../templates/maze.txt");
+
+			m_matrixWidth = graph.get_xsize();
+			m_matrixHeight = graph.get_ysize();
+
+			for (int y = 0; y < m_matrixHeight; y++)
+				for (int x = 0; x < m_matrixWidth; x++)
+					m_matrix.push_back(*graph.get_vertex(x, y));
+		}
+		catch (const std::exception& error)
+		{
+			std::cerr << error.what() << '\n';
+			goto load_default;
+		}
+	}
+	else
+	{
+		load_default:
+		m_matrix.clear();
+		m_matrix.resize(m_matrixWidth * m_matrixHeight);
+
+		int index = 0;
+		for (int y = 0; y < m_matrixHeight; y++)
+		{
+			for (int x = 0; x < m_matrixWidth; x++)
+			{
+				m_matrix[index].xpos = x;
+				m_matrix[index].ypos = y;
+				index++;
+			}
 		}
 	}
 }
@@ -368,8 +395,8 @@ Application::~Application()
 void Application::run()
 {
 	load_font();
-	create_main_window();
 	create_matrix();
+	create_main_window();
 	refresh_buttons();
 
 	while (m_isRunning)
