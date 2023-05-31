@@ -46,6 +46,7 @@ bool Button::handle_event(SDL_Event& sdlEvent)
 		if (m_enabled && m_hover && m_callback != nullptr)
 		{
 			(*m_callback)(m_app);
+			m_app.refresh_buttons();
 			ret = true;
 		}
 		break;

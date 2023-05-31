@@ -144,12 +144,12 @@ void Application::update()
 	{
 		case B_FLAG_START:
 		if (vertex.is_active && !isFlag)
-			m_vertStart = &vertex;
+			{ m_vertStart = &vertex; refresh_buttons(); }
 		break;
 
 		case B_FLAG_STOP:
 		if (vertex.is_active && !isFlag)
-			m_vertStop = &vertex;
+			{ m_vertStop = &vertex; refresh_buttons(); }
 		break;
 
 		case B_ACTIVATE: vertex.is_active = true; break;
@@ -225,6 +225,15 @@ void Application::create_matrix()
 		for (int y = 0; y < m_matrixHeight; y++)
 			for (int x = 0; x < m_matrixWidth; x++)
 				m_matrix[i++] = *m_graph.get_vertex(x, y);
+
+		if (m_graph.start != nullptr)
+			m_vertStart = m_matrix.data() + m_graph.start->ypos * m_matrixWidth + m_graph.start->xpos;
+
+		if (m_graph.stop != nullptr)
+			m_vertStop = m_matrix.data() + m_graph.stop->ypos * m_matrixWidth + m_graph.stop->xpos;
+
+		if (m_vertStart == m_vertStop)
+			m_vertStop = nullptr;
 	}
 	catch (const std::exception& error)
 	{
@@ -342,8 +351,10 @@ void Application::refresh_buttons()
 	Button& astar   = access_widget<Button>(B_ASTAR);
 	Button& dijk    = access_widget<Button>(B_DIJKSTRA);
 
-	const bool b = !m_isSolving;
 	play.m_textureID = m_isSolving ? STOP : PLAY;
+	play.m_enabled = m_vertStart != nullptr && m_vertStop != nullptr;
+
+	const bool b = !m_isSolving;
 
 	reset.m_enabled   = b;
 	cursor.m_enabled  = b;
