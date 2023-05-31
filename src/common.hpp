@@ -33,15 +33,22 @@ struct Vertex
 	State state = AVAILABLE;
 
 	void Reset();
+	void SoftReset();
+	void SetPos(int x, int y) { xpos = x; ypos = y; }
 };
 
 inline void Vertex::Reset()
+{
+	SoftReset();
+	is_active = true;
+}
+
+inline void Vertex::SoftReset()
 {
 	fcost = 0;
 	gcost = 0;
 	hcost = 0;
 
-	is_active = true;
 	previous = nullptr;
 	state = AVAILABLE;
 }
@@ -103,7 +110,12 @@ class Graph {
 		 * Sprowadź graf do stanu sprzed inicjalizacji
 		 */
 		void util_uninit();
-		
+
+		/**
+		 * Ustaw rozmiary grafu
+		 */
+		void set_size(int x, int y) { xsize = x; ysize = y; }
+
 		Graph();
 		~Graph();
 };

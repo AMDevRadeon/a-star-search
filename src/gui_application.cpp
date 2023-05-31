@@ -209,43 +209,37 @@ void Application::unload_icons()
 
 void Application::create_matrix()
 {
-	if (m_matrix.empty())
-	{
-		try
-		{
-			Graph graph;
-			graph.init_by_file_template("../templates/maze.txt");
+	m_matrix.clear();
+	m_graph.util_uninit();
 
-			m_matrixWidth = graph.get_xsize();
-			m_matrixHeight = graph.get_ysize();
-
-			for (int y = 0; y < m_matrixHeight; y++)
-				for (int x = 0; x < m_matrixWidth; x++)
-					m_matrix.push_back(*graph.get_vertex(x, y));
-		}
-		catch (const std::exception& error)
-		{
-			std::cerr << error.what() << '\n';
-			goto load_default;
-		}
-	}
-	else
+	try
 	{
-		load_default:
-		m_matrix.clear();
+		m_graph.init_by_file_template(g_defaultTemplatePath);
+
+		m_matrixWidth = m_graph.get_xsize();
+		m_matrixHeight = m_graph.get_ysize();
+
 		m_matrix.resize(m_matrixWidth * m_matrixHeight);
 
-		int index = 0;
+		int i = 0;
 		for (int y = 0; y < m_matrixHeight; y++)
-		{
 			for (int x = 0; x < m_matrixWidth; x++)
-			{
-				m_matrix[index].xpos = x;
-				m_matrix[index].ypos = y;
-				index++;
-			}
-		}
+				m_matrix[i++] = *m_graph.get_vertex(x, y);
 	}
+	catch (const std::exception& error)
+	{
+		std::cerr << error.what() << '\n';
+		m_matrix.resize(m_matrixWidth * m_matrixHeight);
+
+		int i = 0;
+		for (int y = 0; y < m_matrixHeight; y++)
+			for (int x = 0; x < m_matrixWidth; x++)
+				m_matrix[i++].SetPos(x, y);
+	}
+
+	m_graph.util_uninit();
+	m_graph.graph = m_matrix.data();
+	m_graph.set_size(m_matrixWidth, m_matrixHeight);
 }
 
 void Application::create_main_window()
@@ -390,6 +384,8 @@ Application::~Application()
 	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
+
+	m_graph.graph = nullptr;
 }
 
 void Application::run()

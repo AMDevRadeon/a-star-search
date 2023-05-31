@@ -10,9 +10,8 @@ void callback_play(Application& app)
 		g_appPtr = &app;
 		app.m_isSolving = true;
 
-		// TODO: Soft reset?
 		for (Vertex& vertex : app.m_matrix)
-			vertex.state = AVAILABLE;
+			vertex.SoftReset();
 
 		SDL_Event sdlEvent{};
 		SDL_PushEvent(&sdlEvent);

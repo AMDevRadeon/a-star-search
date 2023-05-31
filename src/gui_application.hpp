@@ -51,6 +51,7 @@ struct Application
 
 	const char* m_description = nullptr;
 
+	Graph m_graph;
 	Viewport m_viewport;
 	std::vector<Vertex> m_matrix;
 
