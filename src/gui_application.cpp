@@ -259,35 +259,29 @@ void Application::create_main_window()
 	SDL_DisplayMode dm;
 	SDL_GetCurrentDisplayMode(0, &dm);
 
-	const int xMaxRes = dm.w * g_xResFactor;
-	const int yMaxRes = dm.h * g_yResFactor;
-
 	int width = m_matrixWidth * g_vertexSize;
 	int height = m_matrixHeight * g_vertexSize;
 
-	m_defaultScale = 1.0f;
+	const float xmax = static_cast<float>(dm.w * g_xResFactor);
+	const float ymax = static_cast<float>(dm.h * g_yResFactor);
+	const float scale = std::min(1.0f, std::min(xmax / width, ymax / height));
+
+	width *= scale;
+	height *= scale;
 
 	if (width < g_xMinRes)
 		width = g_xMinRes;
-	else if (width > xMaxRes)
-	{
-		m_defaultScale = xMaxRes / static_cast<float>(width);
-		width = xMaxRes;
-	}
 
 	if (height < g_yMinRes)
 		height = g_yMinRes;
-	else if (height > yMaxRes)
-	{
-		m_defaultScale = std::min(m_defaultScale, yMaxRes / static_cast<float>(height));
-		height = yMaxRes;
-	}
 
 	height += g_windowExtraHeight;
+
 	m_windowWidth = width;
 	m_windowHeight = height;
+	m_defaultScale = scale;
+	m_viewport.m_scale = scale;
 
-	m_viewport.m_scale = m_defaultScale;
 	m_window = SDL_CreateWindow(g_windowTitle, pos, pos, width, height, 0);
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
