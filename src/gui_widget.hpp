@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL2/SDL.h>
 
-class Application;
+struct Application;
 
 class Widget
 {
@@ -22,7 +22,7 @@ class Widget
 	virtual void draw() {}
 	virtual bool handle_event(SDL_Event&) { return false; }
 
-	friend class Application;
+	friend struct Application;
 };
 
 struct Button : public Widget
