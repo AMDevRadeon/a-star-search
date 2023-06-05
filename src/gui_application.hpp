@@ -12,6 +12,7 @@
 
 #include <cmath>
 #include <vector>
+#include <string>
 
 enum TextureID
 {
@@ -51,6 +52,7 @@ struct Application
 
 	const char* m_description = nullptr;
 	void (*m_execute)(Application&) = nullptr;
+	std::string m_templatePath = g_defaultTemplatePath;
 
 	Graph m_graph;
 	Viewport m_viewport;

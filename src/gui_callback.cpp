@@ -1,6 +1,8 @@
 #include "gui_callback.hpp"
 #include "gui_application.hpp"
 
+#include <nfd.h>
+
 Application* g_appPtr = nullptr;
 
 void callback_play(Application& app)
@@ -59,6 +61,23 @@ void callback_randomize(Application& app)
 void callback_load(Application& app)
 {
 	// TODO: Write implementation
+
+	SDL_HideWindow(app.m_window);
+
+	nfdchar_t* path = nullptr;
+	nfdresult_t result = NFD_OpenDialog(nullptr, nullptr, &path);
+
+	if (result == NFD_OKAY)
+	{
+		app.m_templatePath = path;
+		app.destroy_window();
+		app.create_matrix();
+		app.create_main_window();
+	}
+
+	SDL_ShowWindow(app.m_window);
+	if (path != nullptr)
+		free(path);
 }
 
 void callback_diagonal(Application& app) { app.m_isDiagonal = !app.m_isDiagonal; }
