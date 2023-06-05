@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <cstring>
 #include <vector>
-#include <queue>
+#include <random>
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
@@ -80,7 +80,15 @@ class Graph {
 		 */
 		void init_by_user_interface(int xsize, int ysize, bool* activity_setup, int xcoord_start, int ycoord_start,
 																				int xcoord_stop, int ycoord_stop);
-		void init_by_random();
+
+		/**
+		 * Inicjalizuje obiekt Graph, tworząc ściany z szumu.
+		 * 
+		 * @param {int} xsize - Szerokość grafu,
+		 * @param {int} ysize - Wysokość grafu,
+		 * @param {double} fill_percent - stopień wypełnienia grafu scianami [0, 1].
+		*/
+		void init_by_random(int xsize, int ysize, double fill_percent);
 
 		/**
 		 * Pobierz szerokość grafu.
@@ -112,6 +120,11 @@ class Graph {
 		void util_uninit();
 
 		/**
+		 * Sprowadź graf do stanu sprzed pathfindingu
+		 */
+		void util_clear_pathfinding();
+
+		/**
 		 * Ustaw rozmiary grafu
 		 */
 		void set_size(int x, int y) { xsize = x; ysize = y; }
@@ -121,5 +134,6 @@ class Graph {
 };
 
 void solve_astar(Graph& graph, bool diagonal_allowed, void (*callback)());
+void solve_dijkstra(Graph& graph, bool diagonal_allowed, void (*callback)());
 
 void DEBUG_callback_astar();
