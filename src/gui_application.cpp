@@ -168,6 +168,17 @@ void Application::update()
 	goto next_event;
 }
 
+void Application::reload()
+{
+	destroy_window();
+	create_matrix();
+	create_main_window();
+
+	m_viewport.m_scale = m_defaultScale;
+	m_viewport.m_xoffset = 0;
+	m_viewport.m_yoffset = 0;
+}
+
 void Application::load_font()
 {
 	unload_font();
@@ -417,8 +428,7 @@ Application::~Application()
 void Application::run()
 {
 	load_font();
-	create_matrix();
-	create_main_window();
+	reload();
 	refresh_buttons();
 
 	while (m_isRunning)

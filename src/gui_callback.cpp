@@ -70,12 +70,16 @@ void callback_load(Application& app)
 	if (result == NFD_OKAY)
 	{
 		app.m_templatePath = path;
-		app.destroy_window();
-		app.create_matrix();
-		app.create_main_window();
+		app.reload();
 	}
 
+	SDL_Event sdlEvent{};
+	sdlEvent.type = SDL_MOUSEBUTTONUP;
+
 	SDL_ShowWindow(app.m_window);
+	SDL_PushEvent(&sdlEvent);
+	app.update();
+
 	if (path != nullptr)
 		free(path);
 }

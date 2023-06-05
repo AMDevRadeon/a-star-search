@@ -69,6 +69,7 @@ struct Application
 
 	void draw();
 	void update();
+	void reload();
 	void load_font();
 	void unload_font();
 	void load_icons();
