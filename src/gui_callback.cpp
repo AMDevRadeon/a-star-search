@@ -25,7 +25,10 @@ void callback_play(Application& app)
 		app.m_graph.start = app.m_vertStart;
 		app.m_graph.stop = app.m_vertStop;
 
-		solve_astar(app.m_graph, app.m_isDiagonal, &callback_for_solver);
+		if (app.m_isDijkstra)
+			solve_dijkstra(app.m_graph, app.m_isDiagonal, &callback_for_solver);
+		else
+			solve_astar(app.m_graph, app.m_isDiagonal, &callback_for_solver);
 	}
 
 	app.m_isSolving = false;
