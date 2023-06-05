@@ -114,6 +114,15 @@ void Application::update()
 		access_widget<Text>(T_DESCRIPTION).set(m_description);
 	}
 
+	if (m_execute != nullptr)
+	{
+		void (*ptr)(Application&) = m_execute;
+		m_execute = nullptr;
+
+		(*ptr)(*this);
+		refresh_buttons();
+	}
+
 	if (handled || m_isSolving)
 		goto next_event;
 
@@ -157,6 +166,17 @@ void Application::update()
 	}
 
 	goto next_event;
+}
+
+void Application::reload()
+{
+	destroy_window();
+	create_matrix();
+	create_main_window();
+
+	m_viewport.m_scale = m_defaultScale;
+	m_viewport.m_xoffset = 0;
+	m_viewport.m_yoffset = 0;
 }
 
 void Application::load_font()
@@ -209,41 +229,53 @@ void Application::unload_icons()
 
 void Application::create_matrix()
 {
+	m_vertStart = nullptr;
+	m_vertStop = nullptr;
+	m_graph.graph = nullptr;
+
 	m_matrix.clear();
 	m_graph.util_uninit();
 
-	try
+	if (m_templatePath.empty())
 	{
-		m_graph.init_by_file_template(g_defaultTemplatePath);
-
-		m_matrixWidth = m_graph.get_xsize();
-		m_matrixHeight = m_graph.get_ysize();
-
-		m_matrix.resize(m_matrixWidth * m_matrixHeight);
-
-		int i = 0;
-		for (int y = 0; y < m_matrixHeight; y++)
-			for (int x = 0; x < m_matrixWidth; x++)
-				m_matrix[i++] = *m_graph.get_vertex(x, y);
-
-		if (m_graph.start != nullptr)
-			m_vertStart = m_matrix.data() + m_graph.start->ypos * m_matrixWidth + m_graph.start->xpos;
-
-		if (m_graph.stop != nullptr)
-			m_vertStop = m_matrix.data() + m_graph.stop->ypos * m_matrixWidth + m_graph.stop->xpos;
-
-		if (m_vertStart == m_vertStop)
-			m_vertStop = nullptr;
-	}
-	catch (const std::exception& error)
-	{
-		std::cerr << error.what() << '\n';
+		create_default:
 		m_matrix.resize(m_matrixWidth * m_matrixHeight);
 
 		int i = 0;
 		for (int y = 0; y < m_matrixHeight; y++)
 			for (int x = 0; x < m_matrixWidth; x++)
 				m_matrix[i++].SetPos(x, y);
+	}
+	else
+	{
+		try
+		{
+			m_graph.init_by_file_template(m_templatePath.c_str());
+
+			m_matrixWidth = m_graph.get_xsize();
+			m_matrixHeight = m_graph.get_ysize();
+
+			m_matrix.resize(m_matrixWidth * m_matrixHeight);
+
+			int i = 0;
+			for (int y = 0; y < m_matrixHeight; y++)
+				for (int x = 0; x < m_matrixWidth; x++)
+					m_matrix[i++] = *m_graph.get_vertex(x, y);
+
+			if (m_graph.start != nullptr)
+				m_vertStart = m_matrix.data() + m_graph.start->ypos * m_matrixWidth + m_graph.start->xpos;
+
+			if (m_graph.stop != nullptr)
+				m_vertStop = m_matrix.data() + m_graph.stop->ypos * m_matrixWidth + m_graph.stop->xpos;
+
+			if (m_vertStart == m_vertStop)
+				m_vertStop = nullptr;
+		}
+		catch (const std::exception& error)
+		{
+			std::cerr << error.what() << '\n';
+			goto create_default;
+		}
 	}
 
 	m_graph.util_uninit();
@@ -396,8 +428,7 @@ Application::~Application()
 void Application::run()
 {
 	load_font();
-	create_matrix();
-	create_main_window();
+	reload();
 	refresh_buttons();
 
 	while (m_isRunning)

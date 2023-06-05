@@ -12,6 +12,7 @@
 
 #include <cmath>
 #include <vector>
+#include <string>
 
 enum TextureID
 {
@@ -50,6 +51,8 @@ struct Application
 	int m_matrixHeight = g_defMatHeight;
 
 	const char* m_description = nullptr;
+	void (*m_execute)(Application&) = nullptr;
+	std::string m_templatePath = g_defaultTemplatePath;
 
 	Graph m_graph;
 	Viewport m_viewport;
@@ -66,6 +69,7 @@ struct Application
 
 	void draw();
 	void update();
+	void reload();
 	void load_font();
 	void unload_font();
 	void load_icons();
