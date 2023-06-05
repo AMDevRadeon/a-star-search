@@ -45,8 +45,7 @@ bool Button::handle_event(SDL_Event& sdlEvent)
 		case SDL_MOUSEBUTTONDOWN:
 		if (m_enabled && m_hover && m_callback != nullptr)
 		{
-			(*m_callback)(m_app);
-			m_app.refresh_buttons();
+			m_app.m_execute = m_callback;
 			ret = true;
 		}
 		break;

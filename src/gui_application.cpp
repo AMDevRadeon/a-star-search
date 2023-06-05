@@ -114,6 +114,15 @@ void Application::update()
 		access_widget<Text>(T_DESCRIPTION).set(m_description);
 	}
 
+	if (m_execute != nullptr)
+	{
+		void (*ptr)(Application&) = m_execute;
+		m_execute = nullptr;
+
+		(*ptr)(*this);
+		refresh_buttons();
+	}
+
 	if (handled || m_isSolving)
 		goto next_event;
 
@@ -209,6 +218,10 @@ void Application::unload_icons()
 
 void Application::create_matrix()
 {
+	m_vertStart = nullptr;
+	m_vertStop = nullptr;
+	m_graph.graph = nullptr;
+
 	m_matrix.clear();
 	m_graph.util_uninit();
 

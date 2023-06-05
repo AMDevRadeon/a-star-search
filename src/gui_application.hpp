@@ -50,6 +50,7 @@ struct Application
 	int m_matrixHeight = g_defMatHeight;
 
 	const char* m_description = nullptr;
+	void (*m_execute)(Application&) = nullptr;
 
 	Graph m_graph;
 	Viewport m_viewport;
