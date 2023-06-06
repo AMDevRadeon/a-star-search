@@ -1,6 +1,7 @@
 #include "gui_callback.hpp"
 #include "gui_application.hpp"
 #include "../lib/sfd/sfd.h"
+#include <iostream>
 
 Application* g_appPtr = nullptr;
 
@@ -57,7 +58,31 @@ void callback_resize(Application& app)
 
 void callback_randomize(Application& app)
 {
-	// TODO: Write implementation
+	SDL_HideWindow(app.m_window);
+
+	ask_for_value:
+	double randomness;
+
+	std::cout << "Randomness floating point value (0-1): ";
+	std::cin >> randomness;
+
+	if (randomness < 0 || randomness > 1)
+		goto ask_for_value;
+
+	app.m_graph.start = app.m_matrix.data();
+	app.m_graph.stop = app.m_matrix.data();
+
+	app.m_graph.init_by_random(app.m_matrixWidth, app.m_matrixHeight, randomness);
+
+	app.m_vertStart = app.m_graph.start;
+	app.m_vertStop = app.m_graph.stop;
+
+	SDL_Event sdlEvent{};
+	sdlEvent.type = SDL_MOUSEBUTTONUP;
+
+	SDL_ShowWindow(app.m_window);
+	SDL_PushEvent(&sdlEvent);
+	app.update();
 }
 
 void callback_load(Application& app)
