@@ -60,6 +60,13 @@ void Application::draw()
 	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr->m_next)
 		crr->draw();
 
+	if (m_info)
+	{
+		rect.w = m_iconWidth * 13;
+		SDL_Rect src{ m_iconWidth * INFO, 0, m_iconWidth * 13, m_iconHeight };
+		SDL_RenderCopy(m_renderer, m_icons, &src, &rect);
+	}
+
 	SDL_RenderPresent(m_renderer);
 }
 
@@ -96,6 +103,8 @@ void Application::update()
 			m_viewport.m_yoffset = 0;
 			m_viewport.m_scale = m_defaultScale;
 		}
+		else if (sdlEvent.key.keysym.sym == SDLK_F1)
+			m_info = !m_info;
 	}
 	else if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
 		s_isPressed = true;
