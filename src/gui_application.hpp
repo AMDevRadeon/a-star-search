@@ -20,7 +20,8 @@ enum TextureID
 	FLAG_START, FLAG_STOP, ACTIVATE, DEACTIVATE,
 	RESIZE, RANDOMIZE, LOAD, DIAGONAL,
 	ASTAR, DIJKSTRA, OK, FLAG_START_2,
-	FLAG_STOP_2, SELECTED, HOVER, DISABLED
+	FLAG_STOP_2, SELECTED, HOVER, DISABLED,
+	INFO
 };
 
 enum WidgetID
@@ -34,6 +35,7 @@ enum WidgetID
 struct Application
 {
 	int m_mode = B_CURSOR;
+	bool m_info = false;
 	bool m_isRunning = true;
 	bool m_isSolving = false;
 	bool m_isDiagonal = false;
