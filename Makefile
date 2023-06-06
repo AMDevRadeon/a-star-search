@@ -4,7 +4,7 @@ SRCDIR = src
 LIBDIR = lib
 OBJDIR = obj
 
-a-star-search: $(OBJDIR)/astar.o $(OBJDIR)/gui_application.o $(OBJDIR)/gui_callback.o $(OBJDIR)/gui_viewport.o $(OBJDIR)/gui_widget.o $(OBJDIR)/main.o $(OBJDIR)/sfd.o
+a-star-search: $(OBJDIR)/astar.o $(OBJDIR)/gui_application.o $(OBJDIR)/gui_callback.o $(OBJDIR)/gui_viewport.o $(OBJDIR)/gui_widget.o $(OBJDIR)/gui_resource.o $(OBJDIR)/main.o $(OBJDIR)/sfd.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 
@@ -12,7 +12,7 @@ $(OBJDIR)/astar.o : $(SRCDIR)/astar.cpp $(SRCDIR)/common.hpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJDIR)/gui_application.o : $(SRCDIR)/gui_application.cpp $(SRCDIR)/gui_application.hpp $(SRCDIR)/gui_callback.hpp $(SRCDIR)/gui_global.hpp
+$(OBJDIR)/gui_application.o : $(SRCDIR)/gui_application.cpp $(SRCDIR)/gui_application.hpp $(SRCDIR)/gui_callback.hpp $(SRCDIR)/gui_global.hpp $(SRCDIR)/gui_resource.hpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -29,6 +29,10 @@ $(OBJDIR)/gui_widget.o : $(SRCDIR)/gui_widget.cpp $(SRCDIR)/gui_widget.hpp $(SRC
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJDIR)/main.o : $(SRCDIR)/main.cpp $(SRCDIR)/gui_application.hpp
+	mkdir -p obj
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/gui_resource.o : $(SRCDIR)/gui_resource.cpp $(SRCDIR)/gui_resource.hpp
 	mkdir -p obj
 	$(CC) $(CFLAGS) -c $< -o $@
 
