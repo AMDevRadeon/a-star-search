@@ -1,5 +1,6 @@
 #include "gui_application.hpp"
 #include "gui_callback.hpp"
+#include "gui_resource.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -59,6 +60,13 @@ void Application::draw()
 	for (Widget* crr = m_widgetList; crr != nullptr; crr = crr->m_next)
 		crr->draw();
 
+	if (m_info)
+	{
+		rect.w = m_iconWidth * 13;
+		SDL_Rect src{ m_iconWidth * INFO, 0, m_iconWidth * 13, m_iconHeight };
+		SDL_RenderCopy(m_renderer, m_icons, &src, &rect);
+	}
+
 	SDL_RenderPresent(m_renderer);
 }
 
@@ -95,6 +103,8 @@ void Application::update()
 			m_viewport.m_yoffset = 0;
 			m_viewport.m_scale = m_defaultScale;
 		}
+		else if (sdlEvent.key.keysym.sym == SDLK_F1)
+			m_info = !m_info;
 	}
 	else if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
 		s_isPressed = true;
@@ -182,10 +192,7 @@ void Application::reload()
 void Application::load_font()
 {
 	unload_font();
-	m_font = TTF_OpenFont(g_fontPath, g_fontSize);
-
-	if (m_font == nullptr)
-		m_isRunning = false; // TODO: Add exceptions
+	m_font = TTF_OpenFontRW(SDL_RWFromMem(g_font, g_fontLength), 1, g_fontSize);
 }
 
 void Application::unload_font()
@@ -200,14 +207,8 @@ void Application::unload_font()
 void Application::load_icons()
 {
 	unload_icons();
-	SDL_Surface* surface = IMG_Load(g_iconsPath);
 
-	if (surface == nullptr)
-	{
-		m_isRunning = false; // TODO: Add exceptions
-		return;
-	}
-
+	SDL_Surface* surface = IMG_Load_RW(SDL_RWFromMem(g_icons, g_iconsLength), 1);
 	m_icons = SDL_CreateTextureFromSurface(m_renderer, surface);
 
 	SDL_SetTextureBlendMode(m_icons, SDL_BLENDMODE_BLEND);
