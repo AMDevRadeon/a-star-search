@@ -276,7 +276,7 @@ void Graph::init_by_user_interface(int xsize, int ysize, bool* activity_setup, i
 void Graph::init_by_random(int xsize, int ysize, double fill_percent) {
     int i, j;
     Vertex* curr_vertex;
-    bool is_init;
+    bool is_init = false;
     std::random_device rand_dev;
     std::mt19937 threshold(rand_dev());
     std::uniform_real_distribution<> wall_space(0,1);
@@ -322,8 +322,8 @@ void Graph::init_by_random(int xsize, int ysize, double fill_percent) {
         }
     }
 
-    std::uniform_int_distribution<> xspace(0, this->xsize);
-    std::uniform_int_distribution<> yspace(0, this->ysize);
+    std::uniform_int_distribution<> xspace(0, this->xsize - 1);
+    std::uniform_int_distribution<> yspace(0, this->ysize - 1);
 
     curr_vertex = this->get_vertex(xspace(threshold), yspace(threshold));
     curr_vertex->is_active = true;
