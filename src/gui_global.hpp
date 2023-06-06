@@ -17,8 +17,6 @@ inline constexpr int g_descriptionXOffset = 8;
 inline constexpr int g_descriptionYOffset = 10;
 
 inline const char* const g_windowTitle = "A* Pathfinding";
-inline const char* const g_iconsPath = "icons.png";
-inline const char* const g_fontPath = "RobotoCondensed-Regular.ttf";
 inline const char* const g_defaultTemplatePath = "../templates/maze.txt";
 
 inline constexpr SDL_Color g_fontColor{ 0xFF, 0xFF, 0xFF, 0xFF };

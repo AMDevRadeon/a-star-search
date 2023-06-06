@@ -1,5 +1,6 @@
 #include "gui_application.hpp"
 #include "gui_callback.hpp"
+#include "gui_resource.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -182,10 +183,7 @@ void Application::reload()
 void Application::load_font()
 {
 	unload_font();
-	m_font = TTF_OpenFont(g_fontPath, g_fontSize);
-
-	if (m_font == nullptr)
-		m_isRunning = false; // TODO: Add exceptions
+	m_font = TTF_OpenFontRW(SDL_RWFromMem(g_font, g_fontLength), 1, g_fontSize);
 }
 
 void Application::unload_font()
@@ -200,14 +198,8 @@ void Application::unload_font()
 void Application::load_icons()
 {
 	unload_icons();
-	SDL_Surface* surface = IMG_Load(g_iconsPath);
 
-	if (surface == nullptr)
-	{
-		m_isRunning = false; // TODO: Add exceptions
-		return;
-	}
-
+	SDL_Surface* surface = IMG_Load_RW(SDL_RWFromMem(g_icons, g_iconsLength), 1);
 	m_icons = SDL_CreateTextureFromSurface(m_renderer, surface);
 
 	SDL_SetTextureBlendMode(m_icons, SDL_BLENDMODE_BLEND);
