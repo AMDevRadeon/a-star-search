@@ -126,7 +126,7 @@ void callback_load(Application& app)
 	sfd_Options options{};
 	const char* path = sfd_open_dialog(&options);
 
-	if (*path != '\0')
+	if (path != nullptr && *path != '\0')
 	{
 		app.m_templatePath = path;
 		app.reload();

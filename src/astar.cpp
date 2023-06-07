@@ -283,7 +283,7 @@ void Graph::init_by_random(int xsize, int ysize, double fill_percent) {
 
 
     try { is_init = this->util_check_init(); }
-    catch(const std::runtime_error& e) {};
+    catch(const std::runtime_error&) {};
     
     if (!is_init) {
     this->util_uninit();
