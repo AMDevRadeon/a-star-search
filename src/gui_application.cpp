@@ -299,8 +299,8 @@ void Application::create_main_window()
 	const float ymax = static_cast<float>(dm.h * g_yResFactor);
 	const float scale = std::min(1.0f, std::min(xmax / width, ymax / height));
 
-	width *= scale;
-	height *= scale;
+	width = static_cast<int>(width * scale);
+	height = static_cast<int>(height * scale);
 
 	if (width < g_xMinRes)
 		width = g_xMinRes;
