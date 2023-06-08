@@ -359,9 +359,10 @@ double euclidean_dist(Vertex *const& a, Vertex *const& b) {
 
 void traceback_path(Graph& graph) {
     Vertex* curr_vertex = graph.stop;
+    curr_vertex->state = PATH;
     do {
-        curr_vertex->state = PATH;
         curr_vertex = curr_vertex->previous;
+        curr_vertex->state = PATH;
     } while (curr_vertex != graph.start);
 }
 
