@@ -383,7 +383,7 @@ void solve_astar(Graph& graph, bool diagonal_allowed, void (*callback)()) {
         }
 
         if (curr_vertex == graph.stop) {
-            fprintf(stderr, "[###] solve_astar(): Path found.");
+            fprintf(stderr, "[###] solve_astar(): Path found.\n");
             traceback_path(graph);
             #ifdef ASTAR_DEBUG
             DEBUG_graphall_print(graph, curr_vertex, neighbour_curr_vertex);
@@ -425,7 +425,7 @@ void solve_astar(Graph& graph, bool diagonal_allowed, void (*callback)()) {
         }
 
     }
-    fprintf(stderr, "[###] solve_astar(): No path was found.");
+    fprintf(stderr, "[###] solve_astar(): No path was found.\n");
     return;
 }
 
@@ -447,7 +447,7 @@ void solve_dijkstra(Graph& graph, bool diagonal_allowed, void (*callback)()) {
         }
 
         if (curr_vertex == graph.stop) {
-            fprintf(stderr, "[###] solve_dijkstra(): Path found.");
+            fprintf(stderr, "[###] solve_dijkstra(): Path found.\n");
             traceback_path(graph);
             #ifdef ASTAR_DEBUG
             DEBUG_graphall_print(graph, curr_vertex, neighbour_curr_vertex);
@@ -488,7 +488,7 @@ void solve_dijkstra(Graph& graph, bool diagonal_allowed, void (*callback)()) {
         }
 
     }
-    fprintf(stderr, "[###] solve_dijkstra(): No path was found.");
+    fprintf(stderr, "[###] solve_dijkstra(): No path was found.\n");
     return;
 }
 
