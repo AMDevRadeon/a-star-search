@@ -1,3 +1,10 @@
+A* Search
+---------
+Implementacja algorytmów trasowania grafu: Dijkstry i A*.
+
+**Przykłady działania programu**
+![A* w akcji](.github/astar-gif1.gif)
+
 PROJEKT 3
 ---------
 
