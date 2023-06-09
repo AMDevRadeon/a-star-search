@@ -3,10 +3,12 @@ A* Search
 Implementacja algorytmów trasowania grafu: Dijkstry i A*.
 
 **Przykłady działania programu**
-<img src="https://github.com/AMDevRadeon/a-star-search/blob/master/.github/astar-gif1.gif" width="500" alt="A* w akcji" />
-<img src="https://github.com/AMDevRadeon/a-star-search/blob/master/.github/astar-gif2.gif" width="500" alt="Rysowanie przeszkód w grafie" />
-<img src="https://github.com/AMDevRadeon/a-star-search/blob/master/.github/astar-gif3.gif" width="500" alt="Różne kombinacje algorytmów" />
-
+<div align=center width=100%>
+<img src="https://github.com/AMDevRadeon/a-star-search/blob/master/.github/astar-gif1.gif" width="600" alt="A* w akcji" /><br>
+<img src="https://github.com/AMDevRadeon/a-star-search/blob/master/.github/astar-gif2.gif" width="600" alt="Rysowanie przeszkód w grafie" /><br>
+<img src="https://github.com/AMDevRadeon/a-star-search/blob/master/.github/astar-gif3.gif" width="600" alt="Różne kombinacje algorytmów" /><br>
+</div>
+  
 PROJEKT 3
 ---------
 
