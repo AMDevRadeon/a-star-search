@@ -17,4 +17,6 @@ void callback_sel_astar(Application& app);
 void callback_sel_dijkstra(Application& app);
 
 extern Application* g_appPtr;
+
 void callback_for_solver();
+void callback_for_solver_fast();

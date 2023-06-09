@@ -25,10 +25,10 @@ void callback_play(Application& app)
 		app.m_graph.start = app.m_vertStart;
 		app.m_graph.stop = app.m_vertStop;
 
-		if (app.m_isDijkstra)
-			solve_dijkstra(app.m_graph, app.m_isDiagonal, &callback_for_solver);
-		else
-			solve_astar(app.m_graph, app.m_isDiagonal, &callback_for_solver);
+		void (*callback)() = g_stepDelay <= 0 ? &callback_for_solver_fast : &callback_for_solver;
+		void (*solver)(Graph&, bool, void (*)()) = app.m_isDijkstra ? &solve_dijkstra : &solve_astar;
+
+		(*solver)(app.m_graph, app.m_isDiagonal, callback);
 	}
 
 	app.m_isSolving = false;
@@ -153,4 +153,13 @@ void callback_for_solver()
 	g_appPtr->draw();
 
 	SDL_Delay(g_stepDelay);
+}
+
+void callback_for_solver_fast()
+{
+	if (g_appPtr == nullptr || !g_appPtr->m_isSolving)
+		return;
+
+	g_appPtr->update();
+	g_appPtr->draw();
 }
