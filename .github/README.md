@@ -4,6 +4,7 @@ Implementacja algorytmów trasowania grafu: Dijkstry i A*.
 
 **Przykłady działania programu**
 ![A* w akcji](https://github.com/AMDevRadeon/a-star-search/blob/master/.github/astar-gif1.gif)
+![Rysowanie przeszkód w grafie](https://github.com/AMDevRadeon/a-star-search/blob/master/.github/astar-gif2.gif)
 
 PROJEKT 3
 ---------
